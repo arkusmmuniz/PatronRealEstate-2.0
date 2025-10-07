@@ -73,7 +73,7 @@ export default function VideosPage() {
     visibleVideos < sortedVideos.filter((video) => !video.featured).length;
 
   return (
-    <main className="flex-1">
+    <main className="flex-1 pt-20">
       {/* Hero Section */}
       <section className="relative bg-white py-8 md:py-12 overflow-hidden">
         {/* Background Pattern */}
@@ -87,12 +87,8 @@ export default function VideosPage() {
         <div className="relative container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-lime-100 rounded-full mb-4">
-                <span className="text-lg">🎥</span>
-              </div>
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3 leading-tight">
-                Real Estate
-                <span className="block text-lime-600">Videos</span>
+              <h1 className="text-3xl md:text-4xl font-bold mb-3 leading-tight">
+                <span className="text-gray-900">Fab</span><span className="text-lime-600">Friday</span>
               </h1>
               <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed mb-6">
                 Discover properties, expert tips, and market analysis through

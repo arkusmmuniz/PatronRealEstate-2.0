@@ -14,17 +14,6 @@ const managementServices = [
     ],
   },
   {
-    title: "Rent Collection & Financial Management",
-    description: "Automated rent collection and detailed financial reporting for your investment.",
-    icon: CreditCard,
-    features: [
-      "Online rent collection portal",
-      "Late payment enforcement",
-      "Monthly financial statements",
-      "Tax preparation assistance",
-    ],
-  },
-  {
     title: "Maintenance & Repairs",
     description: "24/7 maintenance coordination with vetted contractors and emergency response.",
     icon: Wrench,

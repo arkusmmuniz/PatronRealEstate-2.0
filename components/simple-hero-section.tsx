@@ -21,9 +21,9 @@ export function SimpleHeroSection() {
       {/* Imagen de fondo simplificada */}
       <div className="absolute inset-0 z-0">
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0 bg-cover bg-bottom bg-no-repeat"
           style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1920&h=1080&fit=crop')`,
+            backgroundImage: `url('/hero-living-room.jpg')`,
           }}
         />
         <div className="absolute inset-0 bg-black/5" />

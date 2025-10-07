@@ -134,16 +134,6 @@ export default function PropertyManagementPage() {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3">
-                  <DollarSign className="w-6 h-6 text-lime-600 mt-1 flex-shrink-0" />
-                  <div>
-                    <h4 className="font-semibold mb-2">Rent Collection</h4>
-                    <p className="text-sm text-gray-600">
-                      Automated rent collection, late fee management, and
-                      detailed financial reporting.
-                    </p>
-                  </div>
-                </div>
 
                 <div className="flex items-start gap-3">
                   <Wrench className="w-6 h-6 text-lime-600 mt-1 flex-shrink-0" />

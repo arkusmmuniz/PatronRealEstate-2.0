@@ -93,41 +93,7 @@ export default function HomeValuePage() {
           </h1>
         </div>
 
-        {/* Intro Statement */}
-        <div className="max-w-4xl mx-auto mb-12">
-          <Card className="bg-white shadow-lg border border-gray-200">
-            <CardContent className="p-8">
-              <p className="text-gray-700 leading-relaxed mb-6">
-                As part of <strong>PATRON's</strong> quest to provide homeowners
-                with resources and knowledge, we would like to provide you with
-                a <strong>FREE, no obligation</strong> tool that empowers
-                homeowners with personalized home finance insights and
-                facilitates engagement with the experts that can help you manage
-                your home asset.
-              </p>
-
-              <p className="text-gray-700 leading-relaxed mb-6">
-                By signing up, each month, you will receive a personalized
-                report that tracks your home value, mortgages and market
-                conditions. You will also receive advice about when to buy or
-                sell your home, when to refinance, when to drop your mortgage
-                insurance, how to save by strategically paying your principal
-                payments, and even how much you could make if you are interested
-                in making a "move".
-              </p>
-
-              <p className="text-gray-700 leading-relaxed mb-6">
-                Take advantage of this free, homeownership tool provided to you
-                with no obligation. Give it a try. Simply type in your home
-                address and get a sneak peek. If you like what you see, you just
-                need to provide your email address to start receiving your
-                monthly updates. You can unsubscribe anytime.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Homebot Widget Integration */}
+        {/* Homebot Widget Integration - Moved to top */}
         <div className="max-w-4xl mx-auto mb-12">
           <Card className="bg-white shadow-xl border border-gray-200">
             <CardHeader className="text-center">
@@ -183,6 +149,40 @@ export default function HomeValuePage() {
                   </div>
                 )}
               </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Intro Statement - Moved below the widget */}
+        <div className="max-w-4xl mx-auto mb-12">
+          <Card className="bg-white shadow-lg border border-gray-200">
+            <CardContent className="p-8">
+              <p className="text-gray-700 leading-relaxed mb-6">
+                As part of <strong>PATRON's</strong> quest to provide homeowners
+                with resources and knowledge, we would like to provide you with
+                a <strong>FREE, no obligation</strong> tool that empowers
+                homeowners with personalized home finance insights and
+                facilitates engagement with the experts that can help you manage
+                your home asset.
+              </p>
+
+              <p className="text-gray-700 leading-relaxed mb-6">
+                By signing up, each month, you will receive a personalized
+                report that tracks your home value, mortgages and market
+                conditions. You will also receive advice about when to buy or
+                sell your home, when to refinance, when to drop your mortgage
+                insurance, how to save by strategically paying your principal
+                payments, and even how much you could make if you are interested
+                in making a "move".
+              </p>
+
+              <p className="text-gray-700 leading-relaxed mb-6">
+                Take advantage of this free, homeownership tool provided to you
+                with no obligation. Give it a try. Simply type in your home
+                address and get a sneak peek. If you like what you see, you just
+                need to provide your email address to start receiving your
+                monthly updates. You can unsubscribe anytime.
+              </p>
             </CardContent>
           </Card>
         </div>

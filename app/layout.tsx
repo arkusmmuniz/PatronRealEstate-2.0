@@ -34,8 +34,9 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${spaceGrotesk.variable} ${dmSans.variable} antialiased`}
+      suppressHydrationWarning={true}
     >
-      <body className="font-sans bg-background text-foreground">
+      <body className="font-sans bg-background text-foreground" suppressHydrationWarning={true}>
         <ConditionalLayout>{children}</ConditionalLayout>
       </body>
     </html>

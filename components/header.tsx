@@ -56,22 +56,23 @@ export function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <PatronLogo size="medium" />
+          <div className="flex-shrink-0">
+            <PatronLogo size="large" />
+          </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-0.5">
+          <nav className="hidden lg:flex items-center space-x-1 ml-auto mr-8">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className={`font-medium transition-all duration-200 flex items-center space-x-1.5 px-2.5 py-2 rounded-lg cursor-pointer text-sm ${
+                className={`font-medium transition-all duration-200 px-3 py-2 rounded-lg cursor-pointer text-sm ${
                   isActive(item.href)
                     ? "text-white bg-lime-500 border-b-2 border-lime-600"
                     : "text-gray-700 hover:text-white hover:bg-lime-500"
                 }`}
               >
-                <item.icon className="w-3.5 h-3.5" />
-                <span>{item.name}</span>
+                {item.name}
               </Link>
             ))}
           </nav>
@@ -90,7 +91,7 @@ export function Header() {
               <div className="py-6 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                 {/* Mobile Logo */}
                 <div className="mb-8">
-                  <PatronLogo size="medium" showLink={false} />
+                  <PatronLogo size="large" showLink={false} />
                 </div>
 
                 {/* Mobile Navigation */}
@@ -103,14 +104,13 @@ export function Header() {
                       <Link
                         key={item.name}
                         href={item.href}
-                        className={`flex items-center space-x-3 font-medium transition-colors duration-200 p-3 rounded-lg cursor-pointer ${
+                        className={`font-medium transition-colors duration-200 p-3 rounded-lg cursor-pointer ${
                           isActive(item.href)
                             ? "text-white bg-lime-500 border-l-4 border-lime-600"
                             : "text-gray-700 hover:text-white hover:bg-lime-500"
                         }`}
                       >
-                        <item.icon className="w-5 h-5 flex-shrink-0" />
-                        <span>{item.name}</span>
+                        {item.name}
                       </Link>
                     ))}
                   </div>

@@ -201,7 +201,7 @@ export default function BlogPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <main className="flex-1">
+      <main className="flex-1 pt-20">
         {/* Hero Section */}
         <section className="relative bg-white py-6 md:py-8 overflow-hidden">
           {/* Background Pattern */}

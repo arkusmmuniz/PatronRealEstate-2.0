@@ -52,7 +52,7 @@ function AvatarWithFallback({ src, alt }: { src: string; alt: string }) {
 
 export default function TestimonialsPage() {
   return (
-    <main className="flex-1">
+    <main className="flex-1 pt-20">
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-lime-50 to-white py-12 md:py-16 mt-8">
         <div className="container mx-auto px-4 text-center">
