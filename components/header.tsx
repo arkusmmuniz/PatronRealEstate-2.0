@@ -7,73 +7,26 @@ import {
   SheetTrigger,
   SheetTitle,
 } from "@/components/ui/sheet";
-import {
-  Menu,
-  MapPin,
-  Building2,
-  Search,
-  Info,
-  FileText,
-  MessageCircle,
-  Home,
-  Calculator,
-  Video,
-  ChevronDown,
-  ChevronRight,
-} from "lucide-react";
+import { Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { PatronLogo } from "./patron-logo";
-import { useState } from "react";
 
-const navigationGroups = [
-  {
-    name: "Buy & Sell",
-    items: [
-      { name: "Buyers", href: "/buying", icon: Home },
-      { name: "Sellers", href: "/selling", icon: Building2 },
-      { name: "My Home Value", href: "/home-value", icon: Calculator },
-    ],
-  },
-  {
-    name: "Rent & Manage",
-    items: [
-      { name: "Rent/Property Mgmt", href: "/property-management", icon: Building2 },
-    ],
-  },
-  {
-    name: "Explore",
-    items: [
-      { name: "Collections", href: "/collections", icon: Search },
-      { name: "Local Communities", href: "/communities", icon: MapPin },
-      { name: "Blog", href: "/blog", icon: FileText },
-      { name: "FabFriday", href: "/videos", icon: Video },
-      { name: "Testimonials", href: "/testimonials", icon: MessageCircle },
-    ],
-  },
-  {
-    name: "Company",
-    items: [
-      { name: "About", href: "/about", icon: Info },
-      { name: "Contact", href: "/contact", icon: MessageCircle },
-    ],
-  },
+const navigationItems = [
+  { name: "Buyers", href: "/buying" },
+  { name: "Sellers", href: "/selling" },
+  { name: "My Home Value", href: "/home-value" },
+  { name: "Rent/Property Mgmt", href: "/property-management" },
+  { name: "Collections", href: "/collections" },
+  { name: "Local Communities", href: "/communities" },
+  { name: "Blog", href: "/blog" },
+  { name: "FabFriday", href: "/videos" },
+  { name: "Testimonials", href: "/testimonials" },
+  { name: "About", href: "/about" },
 ];
 
 export function Header() {
   const pathname = usePathname();
-  const [openGroups, setOpenGroups] = useState<string[]>([]);
 
   const isActive = (href: string) => {
     if (href === "/" && pathname === "/") return true;
@@ -81,49 +34,27 @@ export function Header() {
     return false;
   };
 
-  const toggleGroup = (groupName: string) => {
-    setOpenGroups(prev => 
-      prev.includes(groupName) 
-        ? prev.filter(name => name !== groupName)
-        : [...prev, groupName]
-    );
-  };
-
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-lg border-b border-gray-200">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16 md:h-20">
+        <div className="flex items-center justify-between h-20 md:h-24">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <PatronLogo size="large" />
+            <PatronLogo size="xl" />
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
-            {navigationGroups.map((group) => (
-              <DropdownMenu key={group.name}>
-                <DropdownMenuTrigger asChild>
-                  <button className="flex items-center gap-1 text-gray-700 hover:text-gray-900 font-medium transition-colors duration-200 text-sm">
-                    {group.name}
-                    <ChevronDown className="w-4 h-4" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48">
-                  {group.items.map((item) => (
-                    <DropdownMenuItem key={item.name} asChild>
-                      <Link
-                        href={item.href}
-                        className={`flex items-center gap-2 w-full ${
-                          isActive(item.href) ? "bg-lime-50 text-lime-700" : ""
-                        }`}
-                      >
-                        <item.icon className="w-4 h-4" />
-                        {item.name}
-                      </Link>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
+          <nav className="hidden lg:flex items-center space-x-6">
+            {navigationItems.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`text-gray-700 hover:text-gray-900 font-medium transition-colors duration-200 text-sm ${
+                  isActive(item.href) ? "text-lime-600 border-b-2 border-lime-500 pb-1" : ""
+                }`}
+              >
+                {item.name}
+              </Link>
             ))}
           </nav>
 
@@ -151,42 +82,23 @@ export function Header() {
               <div className="py-6 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                 {/* Mobile Logo */}
                 <div className="mb-8">
-                  <PatronLogo size="large" showLink={false} />
+                  <PatronLogo size="xl" showLink={false} />
                 </div>
 
-                {/* Mobile Navigation Groups */}
-                <nav className="space-y-4 mb-8">
-                  {navigationGroups.map((group) => (
-                    <Collapsible
-                      key={group.name}
-                      open={openGroups.includes(group.name)}
-                      onOpenChange={() => toggleGroup(group.name)}
+                {/* Mobile Navigation */}
+                <nav className="space-y-2 mb-8">
+                  {navigationItems.map((item) => (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className={`block p-3 rounded-lg transition-colors duration-200 ${
+                        isActive(item.href)
+                          ? "bg-lime-50 text-lime-700 border-l-4 border-lime-500"
+                          : "text-gray-600 hover:bg-gray-50"
+                      }`}
                     >
-                      <CollapsibleTrigger className="flex items-center justify-between w-full p-3 text-left font-semibold text-gray-800 hover:bg-gray-50 rounded-lg transition-colors duration-200">
-                        {group.name}
-                        <ChevronRight 
-                          className={`w-4 h-4 transition-transform duration-200 ${
-                            openGroups.includes(group.name) ? "rotate-90" : ""
-                          }`} 
-                        />
-                      </CollapsibleTrigger>
-                      <CollapsibleContent className="space-y-1 ml-4 mt-2">
-                        {group.items.map((item) => (
-                          <Link
-                            key={item.name}
-                            href={item.href}
-                            className={`flex items-center gap-2 p-2 rounded-lg transition-colors duration-200 ${
-                              isActive(item.href)
-                                ? "bg-lime-50 text-lime-700 border-l-2 border-lime-500"
-                                : "text-gray-600 hover:bg-gray-50"
-                            }`}
-                          >
-                            <item.icon className="w-4 h-4" />
-                            {item.name}
-                          </Link>
-                        ))}
-                      </CollapsibleContent>
-                    </Collapsible>
+                      <span className="font-medium">{item.name}</span>
+                    </Link>
                   ))}
                 </nav>
 
