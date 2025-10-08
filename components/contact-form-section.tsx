@@ -50,7 +50,7 @@ export function ContactFormSection() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
-            Contact Fabiola Patron
+            Contact Fabiola <span className="bg-gradient-to-r from-lime-400 to-lime-600 bg-clip-text text-transparent">Patron</span>
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Ready to start your real estate journey? Get in touch with Fabiola
@@ -68,7 +68,7 @@ export function ContactFormSection() {
 
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-lime-100 rounded-full flex items-center justify-center">
+                  <div className="w-10 h-10 bg-lime-50 rounded-lg flex items-center justify-center border border-lime-200">
                     <Phone className="w-5 h-5 text-lime-600" />
                   </div>
                   <div>
@@ -78,7 +78,7 @@ export function ContactFormSection() {
                 </div>
 
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-lime-100 rounded-full flex items-center justify-center">
+                  <div className="w-10 h-10 bg-lime-50 rounded-lg flex items-center justify-center border border-lime-200">
                     <Phone className="w-5 h-5 text-lime-600" />
                   </div>
                   <div>
@@ -88,7 +88,7 @@ export function ContactFormSection() {
                 </div>
 
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-lime-100 rounded-full flex items-center justify-center">
+                  <div className="w-10 h-10 bg-lime-50 rounded-lg flex items-center justify-center border border-lime-200">
                     <Mail className="w-5 h-5 text-lime-600" />
                   </div>
                   <div>
@@ -100,7 +100,7 @@ export function ContactFormSection() {
                 </div>
 
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-lime-100 rounded-full flex items-center justify-center">
+                  <div className="w-10 h-10 bg-lime-50 rounded-lg flex items-center justify-center border border-lime-200">
                     <MapPin className="w-5 h-5 text-lime-600" />
                   </div>
                   <div>
@@ -228,7 +228,7 @@ export function ContactFormSection() {
 
                   <Button
                     type="submit"
-                    className="w-full bg-lime-500 hover:bg-lime-600 text-white font-semibold py-3"
+                    className="w-full bg-gradient-to-r from-lime-500 to-lime-600 hover:from-lime-600 hover:to-lime-700 text-white font-semibold py-3 transition-all duration-200 shadow-sm hover:shadow-md"
                   >
                     <Send className="w-4 h-4 mr-2" />
                     Send Message

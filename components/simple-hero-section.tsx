@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Search, MapPin } from "lucide-react";
+import { Search, MapPin, Star, Home, Clock } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PatronLogo } from "./patron-logo";
@@ -17,93 +17,76 @@ export function SimpleHeroSection() {
   };
 
   return (
-    <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden pt-20">
-      {/* Imagen de fondo simplificada */}
+    <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden pt-20">
+      {/* Imagen de fondo más prominente */}
       <div className="absolute inset-0 z-0">
         <div
-          className="absolute inset-0 bg-cover bg-bottom bg-no-repeat"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105"
           style={{
             backgroundImage: `url('/hero-living-room.jpg')`,
           }}
         />
-        <div className="absolute inset-0 bg-black/5" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/2 via-black/8 to-black/15" />
+        {/* Degradado balanceado para contraste óptimo */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/50" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/15 to-black/30" />
+        {/* Degradado central suavizado */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-black/15" />
       </div>
 
-      {/* Contenido principal simplificado */}
-      <div className="relative z-10 container mx-auto px-4 text-center text-white">
-        <div className="max-w-3xl mx-auto">
-          {/* Tagline principal */}
-          <h1 className="text-3xl md:text-5xl font-grotesk font-bold mb-4 leading-tight text-white drop-shadow-[0_6px_12px_rgba(0,0,0,0.95)]">
-            Patron Real Estate
+      {/* Contenido principal corporativo */}
+      <div className="relative z-10 container mx-auto px-4 text-center">
+        <div className="max-w-4xl mx-auto">
+          {/* Título principal premium */}
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-grotesk font-bold mb-4 leading-tight text-white">
+            Your Next Move, Perfectly <span className="bg-gradient-to-r from-lime-400 to-lime-600 bg-clip-text text-transparent">Matched</span>.
           </h1>
 
-          <p className="text-lg md:text-xl mb-4 text-white font-semibold drop-shadow-[0_4px_8px_rgba(0,0,0,0.95)]">
-            Your Real Estate Resource
+          {/* Subtítulo premium */}
+          <p className="text-base md:text-lg mb-6 text-white/90 font-medium max-w-2xl mx-auto leading-relaxed">
+            Discover, sell, or manage properties with a team built for results — anywhere in California and beyond.
           </p>
 
-          <p className="text-sm md:text-base mb-8 text-white font-medium drop-shadow-[0_4px_8px_rgba(0,0,0,0.95)]">
-            DRE 02178767
-          </p>
 
-          {/* Servicios básicos */}
-          <div className="mb-8">
-            <p className="text-lg text-white font-semibold mb-4 drop-shadow-[0_4px_8px_rgba(0,0,0,0.95)]">
-              Services
-            </p>
-            <div className="flex flex-wrap justify-center gap-4 text-sm md:text-base">
-              <button
-                onClick={() => router.push("/buying")}
-                className="bg-white text-gray-800 px-6 py-3 rounded-full font-semibold shadow-lg hover:bg-lime-500 hover:text-white transition-all duration-200 cursor-pointer border-2 border-gray-200"
-              >
-                Buy
-              </button>
-              <button
-                onClick={() => router.push("/selling")}
-                className="bg-white text-gray-800 px-6 py-3 rounded-full font-semibold shadow-lg hover:bg-lime-500 hover:text-white transition-all duration-200 cursor-pointer border-2 border-gray-200"
-              >
-                Sell
-              </button>
-              <button
-                onClick={() => router.push("/home-value")}
-                className="bg-white text-gray-800 px-6 py-3 rounded-full font-semibold shadow-lg hover:bg-lime-500 hover:text-white transition-all duration-200 cursor-pointer border-2 border-gray-200"
-              >
-                Invest
-              </button>
-              <button
-                onClick={() => router.push("/property-management")}
-                className="bg-white text-gray-800 px-6 py-3 rounded-full font-semibold shadow-lg hover:bg-lime-500 hover:text-white transition-all duration-200 cursor-pointer border-2 border-gray-200"
-              >
-                Manage
-              </button>
-            </div>
-          </div>
-
-          {/* Barra de búsqueda simplificada */}
-          <div className="bg-white rounded-xl p-4 md:p-6 shadow-2xl border-2 border-white/80 mb-6">
+          {/* Barra de búsqueda moderna y sutil */}
+          <div className="mb-6 max-w-3xl mx-auto">
             <form
               onSubmit={handleSearch}
-              className="flex flex-col md:flex-row gap-3"
+              className="relative"
             >
-              <div className="relative flex-1">
-                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <div className="relative">
+                <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <input
                   type="text"
-                  placeholder="Search properties..."
+                  placeholder="Search by city, neighborhood, ZIP, or MLS ID..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-white text-gray-800 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-lime-500 focus:border-lime-500 transition-all duration-200 placeholder:text-gray-500 shadow-sm"
+                  className="w-full pl-12 pr-16 py-4 bg-white/95 backdrop-blur-sm text-gray-700 rounded-2xl border border-gray-200/50 focus:ring-2 focus:ring-lime-500/20 focus:border-lime-500 transition-all duration-300 placeholder:text-gray-400 text-sm shadow-lg"
                 />
+                <Button
+                  type="submit"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-lime-500 to-lime-600 hover:from-lime-600 hover:to-lime-700 text-white rounded-xl px-4 py-2 transition-all duration-300 shadow-md hover:shadow-lg"
+                >
+                  <Search className="w-4 h-4" />
+                </Button>
               </div>
-              <Button
-                type="submit"
-                size="lg"
-                className="bg-lime-500 hover:bg-lime-600 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-200 shadow-xl border-2 border-lime-400"
-              >
-                <Search className="w-5 h-5 mr-2" />
-                Search
-              </Button>
             </form>
+          </div>
+
+          {/* CTAs principales compactos */}
+          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+            <Button
+              onClick={() => router.push("/buying")}
+              className="bg-gradient-to-r from-lime-500 to-lime-600 hover:from-lime-600 hover:to-lime-700 text-white font-semibold py-2.5 px-6 rounded-md transition-all duration-200 text-sm shadow-sm hover:shadow-md"
+            >
+              Buy a Home
+            </Button>
+            <Button
+              onClick={() => router.push("/selling")}
+              variant="outline"
+              className="bg-white/10 border border-white/30 text-white hover:bg-white/20 hover:border-white/50 font-semibold py-2.5 px-6 rounded-md transition-all duration-200 text-sm backdrop-blur-sm"
+            >
+              Sell with Us
+            </Button>
           </div>
         </div>
       </div>
