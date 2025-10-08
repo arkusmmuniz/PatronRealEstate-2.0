@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { X, Star, Home, Clock, MapPin, Eye, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useRef } from "react";
+import { useState, useRef, Suspense } from "react";
 
 // Datos de propiedades simuladas más detallados
 const generateDetailedProperties = (collectionId: string, count: number) => {
@@ -82,7 +82,7 @@ const collections = [
   }
 ];
 
-export default function CollectionsPage() {
+function CollectionsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeFilter = searchParams.get('filter');
@@ -270,5 +270,20 @@ export default function CollectionsPage() {
         </div>
       </section>
     </main>
+  );
+}
+
+export default function CollectionsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex-1 pt-20 flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-lime-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading collections...</p>
+        </div>
+      </div>
+    }>
+      <CollectionsContent />
+    </Suspense>
   );
 }
