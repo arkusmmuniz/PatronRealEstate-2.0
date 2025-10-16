@@ -36,7 +36,6 @@ const generateProperties = (collectionId: string, count: number) => {
     "new-this-week": ["$850,000", "$1,200,000", "$950,000", "$1,100,000", "$780,000"],
     "reduced-prices": ["$650,000", "$890,000", "$720,000", "$1,050,000", "$680,000"],
     "luxury-estates": ["$2,500,000", "$3,200,000", "$1,800,000", "$4,100,000", "$2,900,000"],
-    "coastal-living": ["$1,800,000", "$2,300,000", "$1,500,000", "$2,800,000", "$1,600,000"],
     "family-homes": ["$750,000", "$920,000", "$680,000", "$1,100,000", "$850,000"]
   };
 
@@ -70,13 +69,6 @@ const collections = [
     subtitle: "Smart deals and new chances to save big.",
     href: "/collections?filter=reduced",
     properties: generateProperties("reduced-prices", 8)
-  },
-  {
-    id: "coastal-living",
-    title: "Coastal Living",
-    subtitle: "Wake up to ocean views — explore coastal properties.",
-    href: "/collections?filter=coastal",
-    properties: generateProperties("coastal-living", 8)
   }
 ];
 
@@ -119,9 +111,6 @@ function CollectionCarousel({ collection }: { collection: typeof collections[0] 
                )}
                {collection.id === "reduced-prices" && (
                  <>Smart deals and new chances to <span className="bg-gradient-to-r from-lime-400 to-lime-600 bg-clip-text text-transparent font-semibold">save big</span>.</>
-               )}
-               {collection.id === "coastal-living" && (
-                 <>Wake up to ocean views — explore <span className="bg-gradient-to-r from-lime-400 to-lime-600 bg-clip-text text-transparent font-semibold">coastal</span> properties.</>
                )}
              </p>
           </div>
