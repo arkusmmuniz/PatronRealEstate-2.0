@@ -2,6 +2,8 @@
 export const IDXBROKER_CONFIG = {
   API_KEY: "gR0ugo0diM8tTC3cFpSPgZ",
   BASE_URL: "https://middleware.idxbroker.com/mls",
+  // Replace with your actual IDXBroker domain when you have real data
+  WEBSITE_URL: "https://www.idxbroker.com",
   DEFAULT_LIMIT: 20,
   CAROUSEL_LIMIT: 18
 } as const;

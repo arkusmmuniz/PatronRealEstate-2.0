@@ -4,10 +4,10 @@ import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ChevronLeft, ChevronRight, Home, MapPin, Calendar, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Home, MapPin, Calendar, Loader2, ExternalLink } from "lucide-react";
 import IDXBrokerAPI, { IDXBrokerProperty, IDXBrokerResponse } from "@/lib/idxbroker-api";
 import { idxbrokerUtils } from "@/lib/idxbroker-api";
-import { getApiKey } from "@/lib/config";
+import { getApiKey, IDXBROKER_CONFIG } from "@/lib/config";
 
 interface PropertyCarouselProps {}
 
@@ -101,6 +101,16 @@ export function PropertyCarousel({}: PropertyCarouselProps) {
     setCurrentIndex(index);
   };
 
+  // Function to generate internal property details URL
+  const getPropertyDetailsURL = (property: IDXBrokerProperty) => {
+    return `/idxbroker-integration/property/${property.listingID}`;
+  };
+
+  const handlePropertyClick = (property: IDXBrokerProperty) => {
+    const detailsURL = getPropertyDetailsURL(property);
+    window.open(detailsURL, '_blank', 'noopener,noreferrer');
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -138,6 +148,7 @@ export function PropertyCarousel({}: PropertyCarouselProps) {
         <div>
           <h3 className="text-2xl font-bold text-gray-900">Latest Properties</h3>
           <p className="text-gray-600">Discover the newest properties available nationwide</p>
+          <p className="text-sm text-gray-500 mt-1">Click on any property to view detailed information</p>
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -167,7 +178,10 @@ export function PropertyCarousel({}: PropertyCarouselProps) {
         >
           {properties.map((property, index) => (
             <div key={property.listingID} className="w-full md:w-1/2 lg:w-1/4 flex-shrink-0 px-2">
-              <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-105">
+              <Card 
+                className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer group"
+                onClick={() => handlePropertyClick(property)}
+              >
                 <div className="aspect-video relative overflow-hidden">
                   <PropertyImage
                     src={property.imageUrl || "/placeholder.jpg"}
@@ -189,6 +203,13 @@ export function PropertyCarousel({}: PropertyCarouselProps) {
                   
                   {/* Gradient overlay for better text readability */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                  
+                  {/* External link indicator */}
+                  <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <div className="bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg">
+                      <ExternalLink className="w-4 h-4 text-gray-700" />
+                    </div>
+                  </div>
                 </div>
                 
                 <CardContent className="p-4">
