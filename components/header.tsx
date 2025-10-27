@@ -22,6 +22,7 @@ const navigationItems = [
   { name: "Blog", href: "/blog" },
   { name: "FabFriday", href: "/videos" },
   { name: "Testimonials", href: "/testimonials" },
+  { name: "IDXBroker Integration", href: "/idxbroker-integration" },
   { name: "About", href: "/about" },
 ];
 

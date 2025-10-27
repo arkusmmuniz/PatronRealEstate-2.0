@@ -51,6 +51,7 @@ export function PatronLogo({
       width={logoWidth[size]}
       height={logoHeight[size]}
       className={`${sizeClasses[size]} ${className}`}
+      priority={size === "xl" || size === "large"}
     />
   );
 
