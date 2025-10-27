@@ -2,7 +2,7 @@
 
 import { EditorialVideoCard } from "@/components/editorial-video-card";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, PlayCircle } from "lucide-react";
+import { ExternalLink, PlayCircle, Calendar } from "lucide-react";
 import Link from "next/link";
 
 // Mock data with YouTube/Vimeo embed URLs
@@ -11,8 +11,8 @@ const videos = [
     id: "1",
     title: "How to Find Your Dream Home in Miami's Competitive Market",
     description: "Join us as we explore the key strategies for finding and securing your perfect property in Miami's fast-paced real estate market.",
-    thumbnailUrl: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&h=675&fit=crop",
-    embedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1&showinfo=0", // YouTube preview without autoplay
+    thumbnailUrl: "https://img.youtube.com/vi/9bZkp7q19f0/hqdefault.jpg",
+    embedUrl: "https://www.youtube.com/embed/9bZkp7q19f0?rel=0&modestbranding=1&showinfo=0",
     date: "2024-01-15",
     edition: "Episode 12",
     featured: true,
@@ -21,8 +21,8 @@ const videos = [
     id: "2",
     title: "Understanding Market Trends: What Buyers Need to Know",
     description: "A deep dive into current market conditions and what they mean for your buying decisions.",
-    thumbnailUrl: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=450&fit=crop",
-    embedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1&showinfo=0",
+    thumbnailUrl: "https://img.youtube.com/vi/OPf0YbXwDGI/hqdefault.jpg",
+    embedUrl: "https://www.youtube.com/embed/OPf0YbXwDGI?rel=0&modestbranding=1&showinfo=0",
     date: "2024-01-08",
     edition: "Episode 11",
   },
@@ -30,8 +30,8 @@ const videos = [
     id: "3",
     title: "Luxury Waterfront Properties: A Virtual Tour",
     description: "Experience Miami's most stunning waterfront properties from the comfort of your home.",
-    thumbnailUrl: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=450&fit=crop",
-    embedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1&showinfo=0",
+    thumbnailUrl: "https://img.youtube.com/vi/FScLMFX3ffI/hqdefault.jpg",
+    embedUrl: "https://www.youtube.com/embed/FScLMFX3ffI?rel=0&modestbranding=1&showinfo=0",
     date: "2024-01-01",
     edition: "Episode 10",
   },
@@ -65,7 +65,36 @@ const videos = [
 ];
 
 const featuredVideo = videos.find((v) => v.featured);
-const recentVideos = videos.filter((v) => !v.featured).slice(0, 5);
+const recentVideos = videos.filter((v) => !v.featured);
+
+// Helper function to get YouTube video ID from URL
+const getYouTubeVideoId = (url: string): string | null => {
+  // Handle YouTube embed URLs
+  const embedPattern = /youtube\.com\/embed\/([^&\n?#]+)/;
+  const embedMatch = url.match(embedPattern);
+  if (embedMatch) return embedMatch[1];
+  
+  // Handle regular YouTube URLs
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/,
+  ];
+  
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return match[1];
+  }
+  
+  return null;
+};
+
+// Helper function to get video thumbnail URL
+const getVideoThumbnail = (url: string): string => {
+  const videoId = getYouTubeVideoId(url);
+  if (videoId) {
+    return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+  }
+  return 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg';
+};
 
 export default function FabFridayPage() {
   const hasVideos = videos.length > 0;
@@ -73,7 +102,7 @@ export default function FabFridayPage() {
   return (
     <main className="flex-1">
       {/* Hero Section with Branding */}
-      <section className="pt-24 pb-12 bg-gradient-to-br from-white via-gray-50 to-lime-50">
+      <section className="pt-32 pb-16 bg-gradient-to-br from-white via-gray-50 to-lime-50">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-5xl md:text-6xl font-grotesk font-bold text-gray-900 mb-4">
@@ -93,10 +122,14 @@ export default function FabFridayPage() {
           {featuredVideo && (
             <section className="py-12 bg-white">
               <div className="container mx-auto px-4">
-                <div className="max-w-6xl mx-auto">
-                  <EditorialVideoCard {...featuredVideo} />
+                <div className="max-w-5xl mx-auto">
+                  <EditorialVideoCard key={featuredVideo.id} {...featuredVideo} />
+                  <div className="mt-8">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-3">{featuredVideo.title}</h2>
+                    <p className="text-gray-600">{featuredVideo.description}</p>
+                  </div>
+                </div>
               </div>
-            </div>
             </section>
           )}
 

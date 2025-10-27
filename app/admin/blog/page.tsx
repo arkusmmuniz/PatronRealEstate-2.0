@@ -115,7 +115,6 @@ export default function AdminBlogPage() {
   const { toast } = useToast();
   const [blogPosts, setBlogPosts] = useState(mockBlogPosts);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -137,12 +136,10 @@ export default function AdminBlogPage() {
     const matchesSearch =
       post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       post.author.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "all" || post.category === selectedCategory;
     const matchesStatus =
       selectedStatus === "all" || post.status === selectedStatus;
 
-    return matchesSearch && matchesCategory && matchesStatus;
+    return matchesSearch && matchesStatus;
   });
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -284,7 +281,6 @@ export default function AdminBlogPage() {
     (p) => p.status === "published"
   ).length;
   const archivedPosts = blogPosts.filter((p) => p.status === "archived").length;
-  const totalViews = blogPosts.reduce((sum, p) => sum + p.views, 0);
   const featuredPosts = blogPosts.filter((p) => p.featured).length;
 
   return (
@@ -292,13 +288,13 @@ export default function AdminBlogPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Blog Management</h1>
-          <p className="text-gray-600 mt-2">
-            Create, edit, and manage your blog articles and content.
+          <h1 className="text-2xl font-bold text-gray-900">Blog Management</h1>
+          <p className="text-sm text-gray-600">
+            Create, edit, and manage your blog articles and content
           </p>
         </div>
         <Button
-          className="bg-primary hover:bg-primary/90"
+          className="bg-gradient-to-r from-lime-500 to-lime-600 hover:from-lime-600 hover:to-lime-700"
           onClick={() => setShowUploadModal(true)}
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -306,117 +302,63 @@ export default function AdminBlogPage() {
         </Button>
       </div>
 
-      {/* Metrics Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <FileText className="h-5 w-5 text-blue-600" />
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Posts</p>
-                <p className="text-2xl font-bold text-gray-900">{totalPosts}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Eye className="h-5 w-5 text-green-600" />
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Views</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {totalViews.toLocaleString()}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <FileText className="h-5 w-5 text-emerald-600" />
-              <div>
-                <p className="text-sm font-medium text-gray-600">Published</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {publishedPosts}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Eye className="h-5 w-5 text-purple-600" />
-              <div>
-                <p className="text-sm font-medium text-gray-600">Featured</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {featuredPosts}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Archive className="h-5 w-5 text-orange-600" />
-              <div>
-                <p className="text-sm font-medium text-gray-600">Archived</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {archivedPosts}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Compact Metrics */}
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <div className="flex items-center gap-8">
+          <div>
+            <p className="text-xs text-gray-600 mb-1">Total Posts</p>
+            <p className="text-2xl font-bold text-gray-900">{totalPosts}</p>
+          </div>
+          
+          <div className="h-12 w-px bg-gray-200" />
+          
+          <div>
+            <p className="text-xs text-gray-600 mb-1">Published</p>
+            <p className="text-2xl font-bold text-gray-900">{publishedPosts}</p>
+          </div>
+
+          <div className="h-12 w-px bg-gray-200" />
+
+          <div>
+            <p className="text-xs text-gray-600 mb-1">Featured</p>
+            <p className="text-2xl font-bold text-gray-900">{featuredPosts}</p>
+          </div>
+
+          <div className="h-12 w-px bg-gray-200" />
+
+          <div>
+            <p className="text-xs text-gray-600 mb-1">Archived</p>
+            <p className="text-2xl font-bold text-gray-900">{archivedPosts}</p>
+          </div>
+        </div>
       </div>
 
       {/* Search and Filters */}
-      <Card className="bg-white shadow-sm border border-gray-200">
-        <CardContent className="p-6">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input
-                type="text"
-                placeholder="Search posts by title or author..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <Select
-              value={selectedCategory}
-              onValueChange={setSelectedCategory}
-            >
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="All Categories" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                {categories.map((category) => (
-                  <SelectItem key={category} value={category}>
-                    {category}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="All Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="published">Published</SelectItem>
-                <SelectItem value="draft">Draft</SelectItem>
-                <SelectItem value="archived">Archived</SelectItem>
-              </SelectContent>
-            </Select>
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Input
+              type="text"
+              placeholder="Search posts by title or author..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
           </div>
-        </CardContent>
-      </Card>
+          <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="All Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="published">Published</SelectItem>
+              <SelectItem value="draft">Draft</SelectItem>
+              <SelectItem value="archived">Archived</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
       {/* Blog Posts List */}
       <Card className="bg-white shadow-sm border border-gray-200">
