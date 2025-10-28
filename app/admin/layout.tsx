@@ -30,7 +30,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth-supabase";
 
 const navigationItems = [
   { name: "Dashboard", href: "/admin", icon: BarChart3 },

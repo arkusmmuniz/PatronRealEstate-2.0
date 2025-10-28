@@ -57,10 +57,6 @@ export default function AdminSettings() {
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" defaultValue="admin@patronrealestate.com" />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone</Label>
-              <Input id="phone" type="tel" defaultValue="323.350.3137" />
-            </div>
           </div>
         </CardContent>
       </Card>

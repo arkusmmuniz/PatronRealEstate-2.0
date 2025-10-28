@@ -10,8 +10,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Home, Lock, User } from "lucide-react"
-import { auth } from "@/lib/auth"
+import { Home, Lock, User, Loader2 } from "lucide-react"
+import { auth } from "@/lib/auth-supabase"
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("")
@@ -25,14 +25,33 @@ export default function AdminLoginPage() {
     setLoading(true)
     setError("")
 
-    if (email === "admin@patronrealestate.com" && password === "admin123") {
-      auth.login("admin", email)
-      router.push("/admin")
-    } else {
-      setError("Invalid credentials. Use admin@patronrealestate.com / admin123")
+    try {
+      console.log('Starting login process...')
+      const result = await auth.login(email, password, "admin")
+      console.log('Login result:', result)
+      
+      if (result.success) {
+        console.log('Redirecting to admin dashboard...')
+        router.push("/admin")
+      } else {
+        setError("Login failed. Please check your credentials.")
+      }
+    } catch (error: any) {
+      console.error('Login error:', error)
+      
+      // Manejar diferentes tipos de errores
+      if (error.message?.includes('Invalid login credentials')) {
+        setError("Invalid email or password. Please try again.")
+      } else if (error.message?.includes('Email not confirmed')) {
+        setError("Please check your email and confirm your account before logging in.")
+      } else if (error.message?.includes('Too many requests')) {
+        setError("Too many login attempts. Please wait a moment and try again.")
+      } else {
+        setError(error.message || "Login failed. Please try again.")
+      }
+    } finally {
+      setLoading(false)
     }
-
-    setLoading(false)
   }
 
   return (
@@ -94,14 +113,23 @@ export default function AdminLoginPage() {
               )}
 
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Signing in..." : "Sign In"}
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Signing in...
+                  </>
+                ) : (
+                  <>
+                    <Lock className="w-4 h-4 mr-2" />
+                    Sign In
+                  </>
+                )}
               </Button>
             </form>
 
             <div className="mt-6 text-center text-sm text-muted-foreground">
-              <p>Demo credentials:</p>
-              <p>Email: admin@patronrealestate.com</p>
-              <p>Password: admin123</p>
+              <p>Use your Supabase credentials to sign in</p>
+              <p>Contact administrator for access</p>
             </div>
 
             <div className="mt-4 text-center">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,18 +29,13 @@ import {
   Video,
   Star,
   Calendar,
+  Loader2,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { videoService } from "@/lib/services";
+import { FabFridayVideo } from "@/lib/supabase";
 
-// Type for FabFriday videos
-interface FabFridayVideo {
-  id: string;
-  title: string;
-  description: string;
-  videoUrl: string;
-  date: string;
-  featured: boolean;
-}
+// Usamos la interfaz FabFridayVideo de supabase.ts
 
 // Helper function to get YouTube video ID from URL
 const getYouTubeVideoId = (url: string): string | null => {
@@ -67,54 +62,43 @@ const getVideoThumbnail = (url: string): string => {
   return 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=450&fit=crop';
 };
 
-// Mock data - will be replaced with Supabase later
-const mockVideos: FabFridayVideo[] = [
-  {
-    id: "1",
-    title: "How to Find Your Dream Home in Miami",
-    description: "Key strategies for finding your perfect property in Miami's fast-paced real estate market.",
-    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    date: "2024-01-15",
-    featured: true,
-  },
-  {
-    id: "2",
-    title: "Understanding Market Trends",
-    description: "Deep dive into current market conditions and what they mean for your buying decisions.",
-    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    date: "2024-01-08",
-    featured: false,
-  },
-  {
-    id: "3",
-    title: "Luxury Waterfront Properties",
-    description: "Experience Miami's most stunning waterfront properties from the comfort of your home.",
-    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    date: "2024-01-01",
-    featured: false,
-  },
-  {
-    id: "4",
-    title: "First Time Home Buyer Guide",
-    description: "Everything you need to know to buy your first home with confidence and avoid common mistakes.",
-    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    date: "2023-12-25",
-    featured: false,
-  },
-];
-
 export default function FabFridayAdminPage() {
   const { toast } = useToast();
-  const [videos, setVideos] = useState(mockVideos);
+  const [videos, setVideos] = useState<FabFridayVideo[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newVideo, setNewVideo] = useState({
     title: "",
     description: "",
-    videoUrl: "",
+    video_url: "",
   });
 
-  const handleAddVideo = () => {
-    if (!newVideo.title || !newVideo.videoUrl) {
+  // Cargar videos al montar el componente
+  useEffect(() => {
+    loadVideos();
+  }, []);
+
+  const loadVideos = async () => {
+    try {
+      setLoading(true);
+      console.log('Loading videos from admin...');
+      const videosData = await videoService.getAllVideos();
+      console.log('Videos loaded:', videosData);
+      setVideos(videosData);
+    } catch (error) {
+      console.error('Error loading videos:', error);
+      toast({
+        title: "Error",
+        description: `Failed to load videos: ${error}`,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddVideo = async () => {
+    if (!newVideo.title || !newVideo.video_url) {
       toast({
         title: "Required fields",
         description: "Please fill in the title and video URL",
@@ -123,68 +107,93 @@ export default function FabFridayAdminPage() {
       return;
     }
 
-    const video: FabFridayVideo = {
-      id: Date.now().toString(),
-      ...newVideo,
-      date: new Date().toISOString().split("T")[0],
-      featured: false,
-    };
+    try {
+      console.log('Creating video with data:', newVideo);
+      
+      const videoData = {
+        title: newVideo.title,
+        description: newVideo.description || "",
+        video_url: newVideo.video_url,
+        featured: false,
+      };
 
-    setVideos([video, ...videos]);
-    setNewVideo({ title: "", description: "", videoUrl: "" });
-    setShowAddModal(false);
+      console.log('Video data to send:', videoData);
+      const newVideoData = await videoService.createVideo(videoData);
+      console.log('Video created successfully:', newVideoData);
+      
+      setVideos([newVideoData, ...videos]);
+      setNewVideo({ title: "", description: "", video_url: "" });
+      setShowAddModal(false);
 
-    toast({
-      title: "Video added",
-      description: `${video.title} has been added to FabFriday`,
-    });
+      toast({
+        title: "Video added",
+        description: `${newVideoData.title} has been added to FabFriday`,
+      });
+    } catch (error) {
+      console.error('Error creating video:', error);
+      toast({
+        title: "Error",
+        description: `Failed to add video: ${error}`,
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleDeleteVideo = (id: string) => {
-    const video = videos.find((v) => v.id === id);
-    setVideos(videos.filter((v) => v.id !== id));
-
-    toast({
-      title: "Video deleted",
-      description: `${video?.title} has been removed`,
-      variant: "destructive",
-    });
-  };
-
-  const handleToggleFeatured = (id: string) => {
+  const handleDeleteVideo = async (id: number) => {
     const video = videos.find((v) => v.id === id);
     if (!video) return;
 
-    // Check if trying to feature more than 1 video
-    const currentFeaturedCount = videos.filter((v) => v.featured).length;
-    
-    // If clicking to feature a video and already at max
-    if (!video.featured && currentFeaturedCount >= 1) {
+    try {
+      await videoService.deleteVideo(id);
+      setVideos(videos.filter((v) => v.id !== id));
+
       toast({
-        title: "Limit Reached",
-        description: "You can only feature 1 video. Please unfeature the current featured video first.",
+        title: "Video deleted",
+        description: `${video.title} has been removed`,
         variant: "destructive",
       });
-      return;
+    } catch (error) {
+      console.error('Error deleting video:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete video",
+        variant: "destructive",
+      });
     }
+  };
 
-    // Toggle featured status - if featuring, unfeature all others
-    const updatedVideos = videos.map((v) => ({
-      ...v,
-      featured: v.id === id ? !v.featured : false,
-    }));
-    
-    setVideos(updatedVideos);
+  const handleToggleFeatured = async (id: number) => {
+    const video = videos.find((v) => v.id === id);
+    if (!video) return;
 
-    toast({
-      title: video.featured ? "Video Unfeatured" : "Video Featured",
-      description: `${video.title} is now ${video.featured ? 'no longer' : ''} featured`,
-    });
+    try {
+      await videoService.toggleFeatured(id);
+      
+      // Actualizar el estado local
+      const updatedVideos = videos.map((v) => ({
+        ...v,
+        featured: v.id === id ? !v.featured : false,
+      }));
+      
+      setVideos(updatedVideos);
+
+      toast({
+        title: video.featured ? "Video Unfeatured" : "Video Featured",
+        description: `${video.title} is now ${video.featured ? 'no longer' : ''} featured`,
+      });
+    } catch (error) {
+      console.error('Error toggling featured status:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update featured status",
+        variant: "destructive",
+      });
+    }
   };
 
   // Get latest video date
   const latestVideo = videos.length > 0 ? videos[0] : null;
-  const lastUploadDate = latestVideo ? new Date(latestVideo.date).toLocaleDateString('en-US', { 
+  const lastUploadDate = latestVideo ? new Date(latestVideo.created_at).toLocaleDateString('en-US', { 
     month: 'long', 
     day: 'numeric', 
     year: 'numeric' 
@@ -192,6 +201,17 @@ export default function FabFridayAdminPage() {
 
   const totalVideos = videos.length;
   const featuredCount = videos.filter((v) => v.featured).length;
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-lime-600" />
+          <p className="text-muted-foreground">Loading videos...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <TooltipProvider>
@@ -248,9 +268,9 @@ export default function FabFridayAdminPage() {
                 <Label htmlFor="videoUrl">Video URL (YouTube/Vimeo) *</Label>
                 <Input
                   id="videoUrl"
-                  value={newVideo.videoUrl}
+                  value={newVideo.video_url}
                   onChange={(e) =>
-                    setNewVideo({ ...newVideo, videoUrl: e.target.value })
+                    setNewVideo({ ...newVideo, video_url: e.target.value })
                   }
                   placeholder="https://www.youtube.com/watch?v=..."
                   className="mt-2"
@@ -319,7 +339,7 @@ export default function FabFridayAdminPage() {
                 {/* Thumbnail preview */}
                 <div className="w-48 h-28 rounded-lg flex items-center justify-center flex-shrink-0 border border-gray-200 overflow-hidden">
                   <img 
-                    src={getVideoThumbnail(video.videoUrl)} 
+                    src={getVideoThumbnail(video.video_url)} 
                     alt={video.title}
                     className="w-full h-full object-cover"
                     onError={(e) => {
@@ -353,13 +373,17 @@ export default function FabFridayAdminPage() {
                   <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
                     <span className="flex items-center gap-1">
                       <Calendar className="w-4 h-4" />
-                      {video.date}
+                      {new Date(video.created_at).toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric', 
+                        year: 'numeric' 
+                      })}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <a
-                      href={video.videoUrl}
+                      href={video.video_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-lime-600 hover:text-lime-700 text-sm font-medium flex items-center gap-1 transition-colors"
