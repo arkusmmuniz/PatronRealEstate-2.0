@@ -8,6 +8,18 @@ const nextConfig = {
   },
   images: {
     unoptimized: true,
+    domains: [
+      'api.idxbroker.com',
+      'images.idxbroker.com',
+      'photos.idxbroker.com',
+      'media.idxbroker.com',
+      'cdn.idxbroker.com',
+      'patronrealestateservices.idxbroker.com',
+      'patronrealestateservices.com',
+      'images.unsplash.com',
+      'api-trestle.corelogic.com',
+      'trestle.corelogic.com'
+    ],
   },
 }
 

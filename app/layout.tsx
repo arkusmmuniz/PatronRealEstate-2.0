@@ -23,6 +23,9 @@ export const metadata: Metadata = {
   description:
     "Professional real estate services for buying, selling, and property management. Expert agents helping you find your dream home in Miami.",
   generator: "v0.app",
+  other: {
+    'Content-Security-Policy': "img-src 'self' data: blob: https: http:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: http:; style-src 'self' 'unsafe-inline' https: http:;"
+  }
 };
 
 export default function RootLayout({

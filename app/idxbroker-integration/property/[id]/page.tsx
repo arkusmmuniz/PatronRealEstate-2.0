@@ -25,6 +25,7 @@ import Link from "next/link";
 import IDXBrokerAPI, { IDXBrokerProperty, IDXBrokerResponse } from "@/lib/idxbroker-api";
 import { idxbrokerUtils } from "@/lib/idxbroker-api";
 import { getApiKey } from "@/lib/config";
+// Removed Unsplash image generation - only use IDXBroker images
 
 export default function PropertyDetailsPage() {
   const params = useParams();
@@ -33,19 +34,57 @@ export default function PropertyDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [propertyImages, setPropertyImages] = useState<string[]>([]);
 
-  // Mock additional images for the gallery
-  const mockImages = [
-    "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-    "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-    "https://images.unsplash.com/photo-1600607687644-c7171b42498b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-    "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2053&q=80",
-    "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
-  ];
+  // Get property images from IDXBroker API only
+  const getPropertyImages = (property: IDXBrokerProperty): string[] => {
+    // If property has images from IDXBroker API, use them
+    if (property.images && Array.isArray(property.images) && property.images.length > 0) {
+      const validImages = property.images
+        .filter(img => typeof img === 'string' && img.trim() !== '' && img !== '/placeholder.jpg');
+      if (validImages.length > 0) {
+        return validImages;
+      }
+    }
+    
+    // If property has a single imageUrl, use it
+    if (property.imageUrl && typeof property.imageUrl === 'string' && property.imageUrl.trim() !== '' && property.imageUrl !== '/placeholder.jpg') {
+      return [property.imageUrl];
+    }
+    
+    // Return placeholder only - no Unsplash images
+    return ['/placeholder.jpg'];
+  };
 
   useEffect(() => {
     fetchPropertyDetails();
   }, [propertyId]);
+
+  useEffect(() => {
+    if (property) {
+      const images = getPropertyImages(property);
+      // Ensure all images are valid strings
+      const validImages = images.filter(img => typeof img === 'string' && img.trim() !== '');
+      
+      // Debug logging
+      console.log(`Property ${property.listingID} images:`, {
+        original: images,
+        valid: validImages,
+        property: {
+          id: property.listingID,
+          type: property.propertyType,
+          city: property.city,
+          state: property.state
+        }
+      });
+      
+      setPropertyImages(validImages);
+      setCurrentImageIndex(0); // Reset to first image
+      
+      // Try to fetch additional images from IDXBroker API
+      fetchPropertyImages();
+    }
+  }, [property]);
 
   const fetchPropertyDetails = async () => {
     setLoading(true);
@@ -53,27 +92,57 @@ export default function PropertyDetailsPage() {
 
     try {
       const apiKey = getApiKey();
-      const api = new IDXBrokerAPI(apiKey);
       
-      // First try to get the specific property
-      const response: IDXBrokerResponse = await api.getPropertyDetails(propertyId);
+      // Use the new specific property endpoint
+      const url = new URL('/api/idxbroker/property/' + propertyId, window.location.origin);
+      url.searchParams.append('apiKey', apiKey);
       
-      if (response.success && response.data && response.data.length > 0) {
-        setProperty(response.data[0]);
-      } else {
-        // If not found, search all properties to find the one with matching ID
-        const searchResponse: IDXBrokerResponse = await api.searchProperties({ limit: 50 });
+      console.log('Fetching property details for ID:', propertyId);
+      
+      const response = await fetch(url.toString(), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const result = await response.json();
         
-        if (searchResponse.success && searchResponse.data) {
-          const foundProperty = searchResponse.data.find(p => p.listingID === propertyId);
-          if (foundProperty) {
-            setProperty(foundProperty);
-          } else {
-            setError("Property not found");
-          }
+        if (result.success && result.data) {
+          console.log('Property details received:', result.data);
+          
+          // Transform the data to match our interface
+          const propertyData: IDXBrokerProperty = {
+            listingID: result.data.listingID || propertyId,
+            address: result.data.address || '',
+            city: result.data.city || '',
+            state: result.data.state || '',
+            zipCode: result.data.zipCode || '',
+            price: result.data.price || 0,
+            bedrooms: result.data.bedrooms || 0,
+            bathrooms: result.data.bathrooms || 0,
+            squareFeet: result.data.squareFeet || 0,
+            listingDate: result.data.listingDate || '',
+            propertyType: result.data.propertyType || '',
+            status: result.data.status || 'Active',
+            imageUrl: result.data.imageUrl || '',
+            images: result.data.images || [],
+            description: result.data.description || '',
+            yearBuilt: result.data.yearBuilt || 0,
+            lotSize: result.data.lotSize || 0,
+            garage: result.data.garage || 0,
+            pool: result.data.pool || false,
+            waterfront: result.data.waterfront || false
+          };
+          
+          setProperty(propertyData);
         } else {
-          setError("Failed to load property details");
+          setError(result.error || "Property not found");
         }
+      } else {
+        const errorResult = await response.json();
+        setError(errorResult.error || "Failed to load property details");
       }
     } catch (err) {
       setError("Failed to load property details");
@@ -83,12 +152,37 @@ export default function PropertyDetailsPage() {
     }
   };
 
+  const fetchPropertyImages = async () => {
+    try {
+      const apiKey = getApiKey();
+      const api = new IDXBrokerAPI(apiKey);
+      
+      const response = await api.getPropertyImages(propertyId);
+      
+      if (response.success && response.data && Array.isArray(response.data) && response.data.length > 0) {
+        // Validate that all items are strings
+        const validImages = response.data.filter(img => typeof img === 'string' && img.trim() !== '');
+        if (validImages.length > 0) {
+          setPropertyImages(validImages);
+          setCurrentImageIndex(0);
+        }
+      }
+    } catch (err) {
+      console.error("Error fetching property images:", err);
+      // Keep existing images if API call fails
+    }
+  };
+
   const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % mockImages.length);
+    if (propertyImages.length > 0) {
+      setCurrentImageIndex((prev) => (prev + 1) % propertyImages.length);
+    }
   };
 
   const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + mockImages.length) % mockImages.length);
+    if (propertyImages.length > 0) {
+      setCurrentImageIndex((prev) => (prev - 1 + propertyImages.length) % propertyImages.length);
+    }
   };
 
   if (loading) {
@@ -148,11 +242,17 @@ export default function PropertyDetailsPage() {
               {/* Image Gallery */}
               <Card className="overflow-hidden">
                 <div className="relative aspect-video">
-                  <img
-                    src={mockImages[currentImageIndex]}
-                    alt={property.address}
-                    className="w-full h-full object-cover"
-                  />
+                  {propertyImages.length > 0 ? (
+                    <img
+                      src={propertyImages[currentImageIndex] || "/placeholder.jpg"}
+                      alt={property.address}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                      <Home className="w-16 h-16 text-gray-400" />
+                    </div>
+                  )}
                   
                   {/* Image Navigation */}
                   <button
@@ -169,9 +269,11 @@ export default function PropertyDetailsPage() {
                   </button>
 
                   {/* Image Counter */}
-                  <div className="absolute bottom-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
-                    {currentImageIndex + 1} / {mockImages.length}
-                  </div>
+                  {propertyImages.length > 0 && (
+                    <div className="absolute bottom-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
+                      {currentImageIndex + 1} / {propertyImages.length}
+                    </div>
+                  )}
 
                   {/* Status Badge */}
                   <Badge 
@@ -189,9 +291,10 @@ export default function PropertyDetailsPage() {
                 </div>
 
                 {/* Thumbnail Gallery */}
-                <div className="p-4">
-                  <div className="flex gap-2 overflow-x-auto">
-                    {mockImages.map((image, index) => (
+                {propertyImages.length > 1 && (
+                  <div className="p-4">
+                    <div className="flex gap-2 overflow-x-auto">
+                      {propertyImages.map((image, index) => (
                       <button
                         key={index}
                         onClick={() => setCurrentImageIndex(index)}
@@ -206,8 +309,9 @@ export default function PropertyDetailsPage() {
                         />
                       </button>
                     ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </Card>
 
               {/* Property Details */}
