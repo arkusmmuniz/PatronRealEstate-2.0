@@ -1,6 +1,6 @@
 "use client";
 
-import { PropertyCarousel } from "@/components/property-carousel";
+import { IDXBrokerWidget } from "@/components/idxbroker-widget";
 
 export default function IDXBrokerIntegrationPage() {
 
@@ -11,15 +11,28 @@ export default function IDXBrokerIntegrationPage() {
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Latest Properties
+              IDXBroker Integration
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Discover the newest properties available with our IDXBroker integration
+              Discover properties and virtual showings with our IDXBroker integration
             </p>
           </div>
 
-          {/* Latest Properties Carousel */}
-          <PropertyCarousel />
+          {/* IDXBroker Widget Section */}
+          <div className="mb-12">
+            <IDXBrokerWidget 
+              widgetId="121096" 
+              title="Featured Properties from IDXBroker" 
+            />
+          </div>
+
+          {/* Virtual Showing Section */}
+          <div className="mt-12">
+            <IDXBrokerWidget 
+              widgetId="121097" 
+              title="Virtual Showing" 
+            />
+          </div>
         </div>
       </div>
     </div>
