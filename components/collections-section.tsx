@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
+import { IDXBrokerWidget } from "@/components/idxbroker-widget";
 
 // Datos de propiedades simuladas para cada colección
 const generateProperties = (collectionId: string, count: number) => {
@@ -56,13 +57,6 @@ const generateProperties = (collectionId: string, count: number) => {
 };
 
 const collections = [
-  {
-    id: "new-this-week",
-    title: "New This Week",
-    subtitle: "Fresh listings hitting the market this week.",
-    href: "/collections?filter=new",
-    properties: generateProperties("new-this-week", 8)
-  },
   {
     id: "reduced-prices",
     title: "Reduced Prices",
@@ -205,6 +199,8 @@ function CollectionCarousel({ collection }: { collection: typeof collections[0] 
 }
 
 export function CollectionsSection() {
+  const router = useRouter();
+  
   return (
     <section className="py-8 bg-white">
       <div className="container mx-auto px-4">
@@ -220,9 +216,41 @@ export function CollectionsSection() {
 
         {/* Colecciones con carruseles */}
         <div className="space-y-4">
-          {collections.map((collection) => (
+          {/* Widget IDX para "New This Week" */}
+          <div className="mb-6">
+            {/* Header de la colección */}
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="text-lg md:text-xl font-grotesk font-bold text-gray-900 mb-1">
+                  New This Week
+                </h3>
+                <p className="text-gray-600 text-xs">
+                  Fresh listings hitting the market this <span className="bg-gradient-to-r from-lime-400 to-lime-600 bg-clip-text text-transparent font-semibold">week</span>.
+                </p>
+              </div>
+              
+              {/* Botón View All - TEMPORALMENTE OCULTO */}
+              {/* <Button
+                onClick={() => router.push("/collections?filter=new")}
+                className="hidden md:flex items-center gap-1 bg-gradient-to-r from-lime-500 to-lime-600 hover:from-lime-600 hover:to-lime-700 text-white border-0 transition-all duration-200 shadow-sm hover:shadow-md px-3 py-1.5 text-xs"
+              >
+                View All
+                <ArrowRight className="w-3 h-3" />
+              </Button> */}
+            </div>
+
+            {/* Widget IDX */}
+            <IDXBrokerWidget 
+              widgetId="121096" 
+              title=""
+              className="shadow-none border-none"
+            />
+          </div>
+
+          {/* Renderizar carrusel normal para otras colecciones - TEMPORALMENTE OCULTO */}
+          {/* {collections.map((collection) => (
             <CollectionCarousel key={collection.id} collection={collection} />
-          ))}
+          ))} */}
         </div>
       </div>
     </section>

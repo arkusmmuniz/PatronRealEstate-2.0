@@ -193,6 +193,61 @@ export function IDXBrokerWidget({ widgetId, title, className = "" }: IDXBrokerWi
           background-position: center;
           background-repeat: no-repeat;
         }
+        
+        /* Estilos para las flechas de navegación del widget IDX */
+        .idx-widget .slick-prev,
+        .idx-widget .slick-next {
+          z-index: 10;
+        }
+        .idx-widget .slick-prev:before,
+        .idx-widget .slick-next:before {
+          font-size: 24px;
+          color: #84cc16;
+          opacity: 0.8;
+        }
+        .idx-widget .slick-prev:hover:before,
+        .idx-widget .slick-next:hover:before {
+          opacity: 1;
+          color: #65a30d;
+        }
+        
+        /* Estilos alternativos para otros tipos de carrusel */
+        .idx-widget a.prev,
+        .idx-widget a.next {
+          background-color: #84cc16 !important;
+          color: white !important;
+          border-radius: 50% !important;
+          width: 40px !important;
+          height: 40px !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+          transition: all 0.2s ease !important;
+        }
+        .idx-widget a.prev:hover,
+        .idx-widget a.next:hover {
+          background-color: #65a30d !important;
+          transform: scale(1.05);
+        }
+        
+        /* Estilos para botones de navegación genéricos */
+        .idx-widget button.prev,
+        .idx-widget button.next {
+          background-color: #84cc16 !important;
+          color: white !important;
+          border-radius: 50% !important;
+          width: 40px !important;
+          height: 40px !important;
+          border: none !important;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+          transition: all 0.2s ease !important;
+        }
+        .idx-widget button.prev:hover,
+        .idx-widget button.next:hover {
+          background-color: #65a30d !important;
+          transform: scale(1.05);
+        }
       `}</style>
     </div>
   );
