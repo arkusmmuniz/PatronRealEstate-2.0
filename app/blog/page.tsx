@@ -17,7 +17,6 @@ import { BlogPost } from "@/lib/supabase";
 
 export default function BlogPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [visiblePosts, setVisiblePosts] = useState(3);
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
@@ -45,12 +44,8 @@ export default function BlogPage() {
   const filteredPosts = blogPosts.filter((post) => {
     const matchesSearch =
       post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.excerpt?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.author.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "all" ||
-      post.category.toLowerCase().replace(" ", "-") === selectedCategory;
-    return matchesSearch && matchesCategory;
+      post.excerpt?.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesSearch;
   });
 
   // Get featured post from filtered results
@@ -133,21 +128,6 @@ export default function BlogPage() {
 
                 {/* Filters */}
               <div className="flex gap-4">
-                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger className="w-48">
-                      <SelectValue placeholder="All Categories" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Categories</SelectItem>
-                      <SelectItem value="market-analysis">Market Analysis</SelectItem>
-                    <SelectItem value="home-care">Home Care</SelectItem>
-                      <SelectItem value="investment-guides">Investment Guides</SelectItem>
-                      <SelectItem value="neighborhood-guides">Neighborhood Guides</SelectItem>
-                      <SelectItem value="tips-advice">Tips & Advice</SelectItem>
-                      <SelectItem value="company-news">Company News</SelectItem>
-                  </SelectContent>
-                </Select>
-
                 <Select value={sortBy} onValueChange={setSortBy}>
                     <SelectTrigger className="w-32">
                       <SelectValue />
@@ -184,7 +164,7 @@ export default function BlogPage() {
                     </p>
                     <div className="flex items-center gap-4 text-sm text-gray-500 mb-6">
                       <span className="flex items-center gap-1">
-                        <span>By {featuredPost.author}</span>
+                        <span>By Patron Real Estate Services</span>
                       </span>
                       <span className="flex items-center gap-1">
                         <span>{featuredPost.publish_date}</span>
@@ -214,9 +194,9 @@ export default function BlogPage() {
                     id={post.id.toString()}
                     title={post.title}
                     excerpt={post.excerpt || ""}
-                    author={post.author}
+                    author="Patron Real Estate Services"
                     date={post.publish_date}
-                    category={post.category}
+                    category="Blog Post"
                     imageUrl={post.image_url || "/placeholder.jpg"}
                     readTime={post.read_time}
                     featured={post.featured}

@@ -23,16 +23,13 @@ export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
 
 // Tipos para las tablas existentes
 export interface BlogPost {
-  id: number
+  id: string; // Changed from number to string for UUID
   title: string
+  slug: string // Added required slug field
   excerpt?: string
   content: string
-  author: string
-  author_email?: string
-  category: string
   status: 'draft' | 'published' | 'archived'
   publish_date: string
-  image_url?: string
   read_time: string
   featured: boolean
   views: number

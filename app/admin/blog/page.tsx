@@ -139,41 +139,42 @@ export default function AdminBlogPage() {
     }
 
     try {
+      console.log('Creating blog post with data:', newPost);
+      
       const postData = {
         title: newPost.title,
-        excerpt: newPost.excerpt || "",
         content: newPost.content,
-        author: "Patron Real Estate Services",
-        author_email: "patronrealestateservices@gmail.com",
-        category: "Company News",
         status: "draft" as const,
-        publish_date: new Date().toISOString().split("T")[0],
-        image_url: selectedFile ? URL.createObjectURL(selectedFile) : "/placeholder.jpg",
-        read_time: "5 min read",
-        featured: false,
-        views: 0,
       };
 
+      console.log('Blog post data to send:', postData);
       const newPostData = await blogService.createPost(postData);
+      console.log('Blog post created successfully:', newPostData);
       setBlogPosts([newPostData, ...blogPosts]);
       
-      setNewPost({
-        title: "",
-        excerpt: "",
-        content: "",
-      });
-      setSelectedFile(null);
-      setShowUploadModal(false);
+    setNewPost({
+      title: "",
+      excerpt: "",
+      content: "",
+    });
+    setSelectedFile(null);
+    setShowUploadModal(false);
 
-      toast({
-        title: "Blog post created successfully",
+    toast({
+      title: "Blog post created successfully",
         description: `${newPostData.title} has been added to your blog`,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating blog post:', error);
+      console.error('Error details:', {
+        message: error?.message,
+        code: error?.code,
+        details: error?.details,
+        hint: error?.hint
+      });
       toast({
         title: "Error",
-        description: "Failed to create blog post",
+        description: `Failed to create blog post: ${error?.message || 'Unknown error'}`,
         variant: "destructive",
       });
     }
@@ -230,15 +231,15 @@ export default function AdminBlogPage() {
   const handleArchivePost = async (id: number) => {
     try {
       await blogService.updatePost(id, { status: "archived" });
-      setBlogPosts(
-        blogPosts.map((p) => (p.id === id ? { ...p, status: "archived" } : p))
-      );
+    setBlogPosts(
+      blogPosts.map((p) => (p.id === id ? { ...p, status: "archived" } : p))
+    );
 
-      const post = blogPosts.find((p) => p.id === id);
-      if (post) {
-        toast({
-          title: "Blog post archived",
-          description: `${post.title} has been moved to archive`,
+    const post = blogPosts.find((p) => p.id === id);
+    if (post) {
+      toast({
+        title: "Blog post archived",
+        description: `${post.title} has been moved to archive`,
         });
       }
     } catch (error) {
@@ -254,15 +255,15 @@ export default function AdminBlogPage() {
   const handleStatusChange = async (id: number, newStatus: string) => {
     try {
       await blogService.updatePost(id, { status: newStatus as any });
-      setBlogPosts(
-        blogPosts.map((p) => (p.id === id ? { ...p, status: newStatus } : p))
-      );
+    setBlogPosts(
+      blogPosts.map((p) => (p.id === id ? { ...p, status: newStatus } : p))
+    );
 
-      const post = blogPosts.find((p) => p.id === id);
-      if (post) {
-        toast({
-          title: "Status updated",
-          description: `${post.title} is now ${newStatus}`,
+    const post = blogPosts.find((p) => p.id === id);
+    if (post) {
+      toast({
+        title: "Status updated",
+        description: `${post.title} is now ${newStatus}`,
         });
       }
     } catch (error) {
@@ -280,9 +281,9 @@ export default function AdminBlogPage() {
     if (!post) return;
 
     try {
-      const newFeaturedState = !post.featured;
-      
-      if (newFeaturedState) {
+    const newFeaturedState = !post.featured;
+
+    if (newFeaturedState) {
         // Desactivar todos los demás featured
         await Promise.all(
           blogPosts
@@ -293,23 +294,23 @@ export default function AdminBlogPage() {
         // Activar el seleccionado
         await blogService.updatePost(id, { featured: true });
         
-        setBlogPosts(
-          blogPosts.map((p) => (p.id === id ? { ...p, featured: true } : { ...p, featured: false }))
-        );
+      setBlogPosts(
+        blogPosts.map((p) => (p.id === id ? { ...p, featured: true } : { ...p, featured: false }))
+      );
         
-        toast({
-          title: "Post featured",
-          description: `${post.title} is now featured`,
-        });
-      } else {
+      toast({
+        title: "Post featured",
+        description: `${post.title} is now featured`,
+      });
+    } else {
         await blogService.updatePost(id, { featured: false });
-        setBlogPosts(
-          blogPosts.map((p) => (p.id === id ? { ...p, featured: false } : p))
-        );
+      setBlogPosts(
+        blogPosts.map((p) => (p.id === id ? { ...p, featured: false } : p))
+      );
         
-        toast({
-          title: "Post unfeatured",
-          description: `${post.title} is no longer featured`,
+      toast({
+        title: "Post unfeatured",
+        description: `${post.title} is no longer featured`,
         });
       }
     } catch (error) {
@@ -419,7 +420,7 @@ export default function AdminBlogPage() {
                     <div className="flex items-center space-x-4 mt-1">
                       <span className="text-xs text-gray-500 flex items-center">
                         <User className="w-3 h-3 mr-1" />
-                        {post.author}
+                        Patron Real Estate Services
                       </span>
                       <span className="text-xs text-gray-500 flex items-center">
                         <Calendar className="w-3 h-3 mr-1" />
@@ -729,10 +730,10 @@ export default function AdminBlogPage() {
               <div className="space-y-2">
                 <h3 className="text-2xl font-bold">{previewPost.title}</h3>
                 <div className="flex items-center space-x-4 text-sm text-gray-500">
-                  <span>By {previewPost.author}</span>
+                  <span>By Patron Real Estate Services</span>
                   <span>Date: {previewPost.publish_date}</span>
                   <span>Read time: {previewPost.read_time}</span>
-                  <Badge variant="outline">{previewPost.category}</Badge>
+                  <Badge variant="outline">Blog Post</Badge>
                 </div>
                 {previewPost.excerpt && (
                   <p className="text-lg text-gray-600 italic">

@@ -1,5 +1,16 @@
 import { supabase, supabaseAdmin, BlogPost, FabFridayVideo, User } from './supabase'
 
+// Función para generar slug a partir del título
+function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '') // Remover caracteres especiales
+    .replace(/\s+/g, '-') // Reemplazar espacios con guiones
+    .replace(/-+/g, '-') // Reemplazar múltiples guiones con uno solo
+    .trim()
+    .replace(/^-|-$/g, ''); // Remover guiones al inicio y final
+}
+
 // Funciones para Blog Posts
 export const blogService = {
   // Obtener todos los posts (para admin)
@@ -29,31 +40,56 @@ export const blogService = {
   },
 
   // Obtener post por ID
-  async getPostById(id: number): Promise<BlogPost | null> {
-    const { data, error } = await supabase
+  async getPostById(id: string): Promise<BlogPost | null> {
+    console.log('Getting blog post by ID:', id);
+    
+    const { data, error } = await supabaseAdmin
       .from('blog_posts')
       .select('*')
       .eq('id', id)
       .single()
     
-    if (error) throw error
+    console.log('Blog post query result:', { data, error });
+    
+    if (error) {
+      console.error('Error getting blog post:', error);
+      throw error;
+    }
+    
     return data
   },
 
   // Crear nuevo post
   async createPost(post: Omit<BlogPost, 'id' | 'created_at' | 'updated_at'>): Promise<BlogPost> {
+    console.log('Creating blog post in service:', post);
+    
+    // Solo enviar campos mínimos requeridos
+    const minimalPostData = {
+      title: post.title,
+      slug: post.slug || generateSlug(post.title),
+      content: post.content,
+      status: post.status || "draft",
+    };
+    
+    console.log('Minimal post data to send:', minimalPostData);
+    
     const { data, error } = await supabaseAdmin
       .from('blog_posts')
-      .insert([post])
+      .insert([minimalPostData])
       .select()
       .single()
     
-    if (error) throw error
+    if (error) {
+      console.error('Supabase create blog post error:', error);
+      throw error;
+    }
+    
+    console.log('Blog post created successfully:', data);
     return data
   },
 
   // Actualizar post
-  async updatePost(id: number, updates: Partial<BlogPost>): Promise<BlogPost> {
+  async updatePost(id: string, updates: Partial<BlogPost>): Promise<BlogPost> {
     const { data, error } = await supabaseAdmin
       .from('blog_posts')
       .update({ ...updates, updated_at: new Date().toISOString() })
@@ -66,7 +102,7 @@ export const blogService = {
   },
 
   // Eliminar post
-  async deletePost(id: number): Promise<void> {
+  async deletePost(id: string): Promise<void> {
     const { error } = await supabaseAdmin
       .from('blog_posts')
       .delete()
