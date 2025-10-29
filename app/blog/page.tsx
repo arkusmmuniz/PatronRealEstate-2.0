@@ -220,10 +220,10 @@ export default function BlogPage() {
 
               {/* Empty State */}
               {filteredPosts.length === 0 && !loading && (
-                <div className="text-center py-12">
+              <div className="text-center py-12">
                   <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-6">
                     <Search className="w-10 h-10 text-gray-400" />
-                  </div>
+                </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">
                   No articles found
                 </h3>
@@ -241,9 +241,9 @@ export default function BlogPage() {
                 </Button>
               </div>
             )}
-            </div>
           </div>
-        </section>
+          </div>
+          </section>
       </main>
     </div>
   );

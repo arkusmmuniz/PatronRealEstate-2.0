@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -31,6 +31,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { auth } from "@/lib/auth-supabase";
+import { supabase, supabaseAdmin } from "@/lib/supabase";
 
 const navigationItems = [
   { name: "Dashboard", href: "/admin", icon: BarChart3 },
@@ -47,6 +48,13 @@ const navigationItems = [
   { name: "Settings", href: "/admin/settings", icon: Settings, hidden: true },
 ];
 
+interface UserProfile {
+  first_name?: string;
+  last_name?: string;
+  email?: string;
+  avatar_url?: string;
+}
+
 export default function AdminLayout({
   children,
 }: {
@@ -54,7 +62,78 @@ export default function AdminLayout({
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [userEmail, setUserEmail] = useState<string>("");
   const pathname = usePathname();
+
+  // Cargar perfil del usuario al montar el componente
+  useEffect(() => {
+    loadUserProfile();
+  }, []);
+
+  const loadUserProfile = async () => {
+    try {
+      // Obtener usuario autenticado
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      if (userError || !user) {
+        console.error("Error getting user in layout:", userError);
+        setUserEmail(user?.email || "");
+        return;
+      }
+
+      setUserEmail(user.email || "");
+
+      // Obtener perfil desde la tabla profiles
+      const { data: profileData, error: profileError } = await supabaseAdmin
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (profileData) {
+        setUserProfile(profileData);
+        if (profileData.email) {
+          setUserEmail(profileData.email);
+        }
+      }
+    } catch (error) {
+      console.error("Error loading user profile:", error);
+    }
+  };
+
+  // Función helper para mostrar el nombre
+  const getDisplayName = () => {
+    if (!userProfile) return null;
+    
+    const firstName = userProfile.first_name || "";
+    const lastName = userProfile.last_name || "";
+    
+    if (firstName && lastName) {
+      return (
+        <>
+          {firstName} <span className="text-lime-600">{lastName}</span>
+        </>
+      );
+    }
+    
+    return null;
+  };
+
+  const getInitials = () => {
+    if (userProfile?.first_name && userProfile?.last_name) {
+      const first = userProfile.first_name.charAt(0).toUpperCase();
+      const last = userProfile.last_name.charAt(0).toUpperCase();
+      return first + last;
+    }
+    if (userProfile?.first_name) {
+      return userProfile.first_name.charAt(0).toUpperCase();
+    }
+    if (userEmail) {
+      return userEmail.charAt(0).toUpperCase();
+    }
+    return "SA";
+  };
 
   const handleLogout = () => {
     auth.logout();
@@ -75,7 +154,14 @@ export default function AdminLayout({
             onClick={() => setSidebarOpen(false)}
           />
           <div className="fixed left-0 top-0 h-full w-64 bg-white border-r border-gray-200 shadow-sm">
-            <SidebarContent collapsed={false} onToggleCollapse={() => {}} />
+            <SidebarContent 
+              collapsed={false} 
+              onToggleCollapse={() => {}}
+              userProfile={userProfile}
+              userEmail={userEmail}
+              getDisplayName={getDisplayName}
+              getInitials={getInitials}
+            />
           </div>
         </div>
       )}
@@ -85,7 +171,14 @@ export default function AdminLayout({
         sidebarCollapsed ? 'lg:w-28' : 'lg:w-72'
       }`}>
         <div className="h-full bg-white border-r border-gray-200 shadow-sm">
-          <SidebarContent collapsed={sidebarCollapsed} onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} />
+          <SidebarContent 
+            collapsed={sidebarCollapsed} 
+            onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+            userProfile={userProfile}
+            userEmail={userEmail}
+            getDisplayName={getDisplayName}
+            getInitials={getInitials}
+          />
         </div>
       </div>
 
@@ -98,7 +191,21 @@ export default function AdminLayout({
     </div>
   );
 
-  function SidebarContent({ collapsed, onToggleCollapse }: { collapsed?: boolean; onToggleCollapse?: () => void }) {
+  function SidebarContent({ 
+    collapsed, 
+    onToggleCollapse,
+    userProfile,
+    userEmail,
+    getDisplayName,
+    getInitials
+  }: { 
+    collapsed?: boolean; 
+    onToggleCollapse?: () => void;
+    userProfile: UserProfile | null;
+    userEmail: string;
+    getDisplayName: () => React.ReactNode;
+    getInitials: () => string;
+  }) {
     return (
       <div className="flex h-full flex-col">
         {/* Header */}
@@ -107,15 +214,21 @@ export default function AdminLayout({
         }`}>
           <Link href="/admin/settings" className="flex items-center gap-3 hover:opacity-80 transition-opacity flex-1">
             <Avatar className="h-10 w-10">
-              <AvatarImage src="/placeholder.svg" alt="Admin" />
-              <AvatarFallback className="bg-lime-500 text-white">SA</AvatarFallback>
+              <AvatarImage src={userProfile?.avatar_url || "/placeholder.svg"} alt={userProfile?.first_name || "Admin"} />
+              <AvatarFallback className="bg-lime-500 text-white">
+                {getInitials()}
+              </AvatarFallback>
             </Avatar>
             {!collapsed && (
               <div className="flex-1 text-left">
-                <p className="text-sm font-medium text-gray-900">
-                  Super <span className="text-lime-600">Admin</span>
-                </p>
-                <p className="text-xs text-gray-500">admin@patronrealestate.com</p>
+                {getDisplayName() ? (
+                  <p className="text-sm font-medium text-gray-900">
+                    {getDisplayName()}
+                  </p>
+                ) : (
+                  <p className="text-sm font-medium text-gray-400">Cargando...</p>
+                )}
+                <p className="text-xs text-gray-500">{userEmail || "..."}</p>
               </div>
             )}
           </Link>

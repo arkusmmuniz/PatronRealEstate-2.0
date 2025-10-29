@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { auth } from "@/lib/auth";
+import { supabase, supabaseAdmin } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -43,14 +44,40 @@ export default function AdminDashboardPage() {
   const [activityFilter, setActivityFilter] = useState<"all" | "video" | "blog">("all");
   const [newVideo, setNewVideo] = useState({ title: "", description: "", videoUrl: "" });
   const [newBlog, setNewBlog] = useState({ title: "", content: "" });
+  const [userFirstName, setUserFirstName] = useState<string>("Admin");
 
   useEffect(() => {
     if (!auth.isAuthenticated("admin")) {
       router.push("/admin/login");
     } else {
       setIsAuthenticated(true);
+      loadUserProfile();
     }
   }, [router]);
+
+  const loadUserProfile = async () => {
+    try {
+      // Obtener usuario autenticado
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      if (userError || !user) {
+        return;
+      }
+
+      // Obtener perfil desde la tabla profiles
+      const { data: profileData, error: profileError } = await supabaseAdmin
+        .from("profiles")
+        .select("first_name")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (profileData?.first_name) {
+        setUserFirstName(profileData.first_name);
+      }
+    } catch (error) {
+      console.error("Error loading user profile:", error);
+    }
+  };
 
   if (!isAuthenticated) {
     return (
@@ -124,15 +151,13 @@ export default function AdminDashboardPage() {
     ? recentActivity 
     : recentActivity.filter(activity => activity.type === activityFilter);
 
-  const userName = "Admin";
-
   return (
     <div className="space-y-6">
       {/* Welcome Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 mb-1">
-            Welcome, <span className="bg-gradient-to-r from-lime-500 to-lime-600 bg-clip-text text-transparent">{userName}</span>
+            Welcome, <span className="bg-gradient-to-r from-lime-500 to-lime-600 bg-clip-text text-transparent">{userFirstName}</span>
           </h1>
           <p className="text-sm text-gray-600">
             Here's what's happening with your content today
