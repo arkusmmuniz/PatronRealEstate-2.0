@@ -68,8 +68,12 @@ export default function AdminLayout({
 
   // Cargar perfil del usuario al montar el componente
   useEffect(() => {
+    // No cargar perfil en la página de login
+    if (pathname === "/admin/login") {
+      return;
+    }
     loadUserProfile();
-  }, []);
+  }, [pathname]);
 
   const loadUserProfile = async () => {
     try {

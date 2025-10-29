@@ -128,14 +128,7 @@ export default function AdminLoginPage() {
             </form>
 
             <div className="mt-6 text-center text-sm text-muted-foreground">
-              <p>Use your Supabase credentials to sign in</p>
               <p>Contact administrator for access</p>
-            </div>
-
-            <div className="mt-4 text-center">
-              <Link href="/agent/login" className="text-sm text-emerald-600 hover:text-emerald-700">
-                Agent Login →
-              </Link>
             </div>
           </CardContent>
         </Card>
