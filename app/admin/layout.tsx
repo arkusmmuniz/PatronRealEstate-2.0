@@ -14,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Toaster } from "@/components/ui/toaster";
 import {
   BarChart3,
   Home,
@@ -150,6 +151,7 @@ export default function AdminLayout({
 
   return (
     <div className="min-h-screen bg-muted/30">
+      <Toaster />
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">

@@ -26,6 +26,10 @@ export default function AdminSettings() {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [changingPassword, setChangingPassword] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -143,6 +147,79 @@ export default function AdminSettings() {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePasswordChange = async () => {
+    try {
+      // Validar que las contraseñas coincidan
+      if (newPassword !== confirmPassword) {
+      toast({
+        title: "Error",
+        description: "Passwords do not match. Please try again",
+        variant: "destructive",
+      });
+        return;
+      }
+
+      // Validar que la nueva contraseña tenga al menos 6 caracteres
+      if (newPassword.length < 6) {
+      toast({
+        title: "Error",
+        description: "Password must be at least 6 characters",
+        variant: "destructive",
+      });
+        return;
+      }
+
+      setChangingPassword(true);
+
+      // Obtener el usuario actual
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      if (userError || !user) {
+        toast({
+          title: "Error",
+          description: "No se pudo obtener la información del usuario",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Actualizar la contraseña usando Supabase Auth
+      const { error: updateError } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (updateError) {
+        console.error("Error al actualizar contraseña:", updateError);
+        toast({
+          title: "Error",
+          description: updateError.message || "Ocurrió un error al actualizar la contraseña",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Success",
+        description: "Password updated successfully",
+        variant: "success",
+      });
+
+      // Limpiar los campos
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (error: any) {
+      console.error("Error changing password:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Ocurrió un error al cambiar la contraseña",
+        variant: "destructive",
+      });
+    } finally {
+      setChangingPassword(false);
     }
   };
 
@@ -326,17 +403,32 @@ export default function AdminSettings() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="currentPassword">Current Password</Label>
-            <Input id="currentPassword" type="password" />
-          </div>
-          <div className="space-y-2">
             <Label htmlFor="newPassword">New Password</Label>
-            <Input id="newPassword" type="password" />
+            <Input 
+              id="newPassword" 
+              type="password" 
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Enter new password"
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="confirmPassword">Confirm New Password</Label>
-            <Input id="confirmPassword" type="password" />
+            <Input 
+              id="confirmPassword" 
+              type="password" 
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm new password"
+            />
           </div>
+          <Button 
+            onClick={handlePasswordChange}
+            disabled={changingPassword || newPassword.length === 0 || confirmPassword.length === 0 || newPassword !== confirmPassword}
+            className="bg-gradient-to-r from-lime-500 to-lime-600 hover:from-lime-600 hover:to-lime-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {changingPassword ? "Updating Password..." : "Update Password"}
+          </Button>
         </CardContent>
       </Card>
 
