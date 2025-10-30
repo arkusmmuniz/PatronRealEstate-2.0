@@ -55,3 +55,12 @@ export interface User {
   created_at: string
   updated_at: string
 }
+
+export interface ActivityLog {
+  id: number // int8
+  entity_type: 'video' | 'post' // basado en la tabla real
+  entity_id: string // uuid
+  action: 'create' | 'update' | 'delete' | 'feature' | 'unfeature' // basado en la tabla real
+  old_data?: Record<string, any> // jsonb
+  new_data?: Record<string, any> // jsonb
+}

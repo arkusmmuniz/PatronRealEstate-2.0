@@ -17,7 +17,7 @@ export default function AdminDebug() {
       console.log('Testing videos table...');
       
       const { data, error: videosError } = await supabaseAdmin
-        .from('Videos')
+        .from('videos')
         .select('*')
         .order('created_at', { ascending: false });
       

@@ -246,7 +246,7 @@ export default function CommunitiesPage() {
 
                   <Button 
                     className="w-full bg-gradient-to-r from-lime-500 to-lime-600 hover:from-lime-600 hover:to-lime-700 text-white"
-                    onClick={() => router.push(`/search?location=${community.name.toLowerCase()}`)}
+                    onClick={() => router.push('/property-management')}
                   >
                     Explore Properties
                     <ArrowRight className="w-4 h-4 ml-2" />

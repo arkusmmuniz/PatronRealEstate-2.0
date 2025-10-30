@@ -415,7 +415,7 @@ export default function AdminBlogPage() {
                       {post.title}
                     </h3>
                     <p className="text-sm text-gray-600 line-clamp-2">
-                      {post.excerpt}
+                      {post.excerpt || "No excerpt available"}
                     </p>
                     <div className="flex items-center space-x-4 mt-1">
                       <span className="text-xs text-gray-500 flex items-center">
@@ -663,7 +663,7 @@ export default function AdminBlogPage() {
                 <Label htmlFor="editExcerpt">Excerpt</Label>
                 <Textarea
                   id="editExcerpt"
-                  value={editingPost.excerpt}
+                  value={editingPost.excerpt || ""}
                   onChange={(e) =>
                     setEditingPost({
                       ...editingPost,
@@ -735,7 +735,7 @@ export default function AdminBlogPage() {
                   <span>Read time: {previewPost.read_time}</span>
                   <Badge variant="outline">Blog Post</Badge>
                 </div>
-                {previewPost.excerpt && (
+                {previewPost.excerpt && previewPost.excerpt.trim() && (
                   <p className="text-lg text-gray-600 italic">
                     {previewPost.excerpt}
                   </p>

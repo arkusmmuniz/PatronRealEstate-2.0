@@ -1,4 +1,4 @@
-import { supabase, supabaseAdmin, BlogPost, FabFridayVideo, User } from './supabase'
+import { supabase, supabaseAdmin, BlogPost, FabFridayVideo, User, ActivityLog } from './supabase'
 
 // Función para generar slug a partir del título
 function generateSlug(title: string): string {
@@ -117,7 +117,7 @@ export const videoService = {
   // Obtener todos los videos (para admin)
   async getAllVideos(): Promise<FabFridayVideo[]> {
     const { data, error } = await supabaseAdmin
-      .from('Videos')
+      .from('videos')
       .select('*')
       .order('created_at', { ascending: false })
     
@@ -128,7 +128,7 @@ export const videoService = {
   // Obtener videos públicos (para frontend)
   async getPublicVideos(): Promise<FabFridayVideo[]> {
     const { data, error } = await supabaseAdmin
-      .from('Videos')
+      .from('videos')
       .select('*')
       .order('created_at', { ascending: false })
     
@@ -142,7 +142,7 @@ export const videoService = {
   // Obtener video por ID
   async getVideoById(id: number): Promise<FabFridayVideo | null> {
     const { data, error } = await supabase
-      .from('Videos')
+      .from('videos')
       .select('*')
       .eq('id', id)
       .single()
@@ -152,11 +152,11 @@ export const videoService = {
   },
 
   // Crear nuevo video
-  async createVideo(video: Omit<FabFridayVideo, 'id' | 'created_at' | 'updated_at'>): Promise<FabFridayVideo> {
+  async createVideo(video: Omit<FabFridayVideo, 'id' | 'created_at' | 'updated_at'>, userId?: string): Promise<FabFridayVideo> {
     console.log('Creating video in service:', video);
     
     const { data, error } = await supabaseAdmin
-      .from('Videos')
+      .from('videos')
       .insert([video])
       .select()
       .single()
@@ -167,47 +167,123 @@ export const videoService = {
     }
     
     console.log('Video created successfully:', data);
+    
+    // Log activity
+    try {
+      await activityService.logActivity({
+        entity_type: 'video',
+        entity_id: data.id.toString(),
+        action: 'create',
+        new_data: data,
+      });
+    } catch (logError) {
+      console.error('Error logging activity:', logError);
+    }
+    
     return data;
   },
 
   // Actualizar video
   async updateVideo(id: number, updates: Partial<FabFridayVideo>): Promise<FabFridayVideo> {
+    // Obtener data anterior para el log
+    const { data: oldData } = await supabaseAdmin
+      .from('videos')
+      .select('*')
+      .eq('id', id)
+      .single();
+    
     const { data, error } = await supabaseAdmin
-      .from('Videos')
+      .from('videos')
       .update({ ...updates, updated_at: new Date().toISOString() })
       .eq('id', id)
       .select()
       .single()
     
     if (error) throw error
+    
+    // Log activity
+    try {
+      await activityService.logActivity({
+        entity_type: 'video',
+        entity_id: id.toString(),
+        action: 'update',
+        old_data: oldData,
+        new_data: data,
+      });
+    } catch (logError) {
+      console.error('Error logging activity:', logError);
+    }
+    
     return data
   },
 
   // Eliminar video
-  async deleteVideo(id: number): Promise<void> {
+  async deleteVideo(id: number, userId?: string, videoTitle?: string): Promise<void> {
+    // Obtener data para el log antes de eliminar
+    const { data: oldData } = await supabaseAdmin
+      .from('videos')
+      .select('*')
+      .eq('id', id)
+      .single();
+    
     const { error } = await supabaseAdmin
-      .from('Videos')
+      .from('videos')
       .delete()
       .eq('id', id)
     
     if (error) throw error
+    
+    // Log activity
+    try {
+      await activityService.logActivity({
+        entity_type: 'video',
+        entity_id: id.toString(),
+        action: 'delete',
+        old_data: oldData,
+      });
+    } catch (logError) {
+      console.error('Error logging activity:', logError);
+    }
   },
 
   // Toggle featured (solo puede haber uno featured)
-  async toggleFeatured(id: number): Promise<void> {
+  async toggleFeatured(id: number, userId?: string, videoTitle?: string, isFeatured?: boolean): Promise<void> {
+    // Obtener estado anterior
+    const { data: oldData } = await supabaseAdmin
+      .from('videos')
+      .select('*')
+      .eq('id', id)
+      .single();
+    
     // Primero desactivar todos los featured
     await supabaseAdmin
-      .from('Videos')
+      .from('videos')
       .update({ featured: false })
       .neq('id', id)
     
     // Luego activar el seleccionado
-    const { error } = await supabaseAdmin
-      .from('Videos')
+    const { data: newData, error } = await supabaseAdmin
+      .from('videos')
       .update({ featured: true, updated_at: new Date().toISOString() })
       .eq('id', id)
+      .select()
+      .single()
     
     if (error) throw error
+    
+    // Log activity
+    try {
+      const action = isFeatured === false ? 'feature' : 'unfeature';
+      await activityService.logActivity({
+        entity_type: 'video',
+        entity_id: id.toString(),
+        action,
+        old_data: oldData,
+        new_data: newData,
+      });
+    } catch (logError) {
+      console.error('Error logging activity:', logError);
+    }
   }
 }
 
@@ -248,5 +324,64 @@ export const userService = {
     
     if (error) throw error
     return data
+  }
+}
+
+// Funciones para Activity Logs
+export const activityService = {
+  // Crear un log de actividad
+  async logActivity(activity: Omit<ActivityLog, 'id'>): Promise<ActivityLog> {
+    const { data, error } = await supabaseAdmin
+      .from('activity_log')
+      .insert([activity])
+      .select()
+      .single()
+    
+    if (error) {
+      console.error('Error logging activity:', error);
+      throw error;
+    }
+    return data
+  },
+
+  // Obtener logs de actividad
+  async getActivityLogs(limit = 50): Promise<ActivityLog[]> {
+    try {
+      const { data, error } = await supabaseAdmin
+        .from('activity_log')
+        .select('*')
+        .order('id', { ascending: false })
+        .limit(limit)
+      
+      if (error) {
+        console.error('Error fetching activity logs:', error);
+        throw error;
+      }
+      return data || []
+    } catch (error) {
+      console.error('Error fetching activity logs:', error);
+      throw error;
+    }
+  },
+
+  // Obtener logs de actividad por tipo de entidad
+  async getActivityLogsByType(entityType: 'video' | 'post', limit = 50): Promise<ActivityLog[]> {
+    try {
+      const { data, error } = await supabaseAdmin
+        .from('activity_log')
+        .select('*')
+        .eq('entity_type', entityType)
+        .order('id', { ascending: false })
+        .limit(limit)
+      
+      if (error) {
+        console.error('Error fetching activity logs by type:', error);
+        throw error;
+      }
+      return data || []
+    } catch (error) {
+      console.error('Error fetching activity logs by type:', error);
+      throw error;
+    }
   }
 }

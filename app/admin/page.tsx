@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { auth } from "@/lib/auth";
-import { supabase, supabaseAdmin } from "@/lib/supabase";
+import { supabase, supabaseAdmin, ActivityLog } from "@/lib/supabase";
+import { videoService, blogService, activityService } from "@/lib/services";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -45,27 +46,40 @@ export default function AdminDashboardPage() {
   const [newVideo, setNewVideo] = useState({ title: "", description: "", videoUrl: "" });
   const [newBlog, setNewBlog] = useState({ title: "", content: "" });
   const [userFirstName, setUserFirstName] = useState<string>("Admin");
+  const [userId, setUserId] = useState<string>("");
+  const [stats, setStats] = useState({
+    totalVideos: 0,
+    totalBlogPosts: 0,
+    featuredVideos: 0,
+  });
+  const [allActivities, setAllActivities] = useState<ActivityLog[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!auth.isAuthenticated("admin")) {
       router.push("/admin/login");
     } else {
       setIsAuthenticated(true);
-      loadUserProfile();
+      loadDashboardData();
     }
   }, [router]);
 
-  const loadUserProfile = async () => {
+  const loadDashboardData = async () => {
     try {
+      setLoading(true);
+      
       // Obtener usuario autenticado
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       
       if (userError || !user) {
+        setLoading(false);
         return;
       }
 
+      setUserId(user.id);
+
       // Obtener perfil desde la tabla profiles
-      const { data: profileData, error: profileError } = await supabaseAdmin
+      const { data: profileData } = await supabaseAdmin
         .from("profiles")
         .select("first_name")
         .eq("id", user.id)
@@ -74,12 +88,56 @@ export default function AdminDashboardPage() {
       if (profileData?.first_name) {
         setUserFirstName(profileData.first_name);
       }
+
+      // Cargar stats reales
+      const [videos, blogs] = await Promise.all([
+        videoService.getAllVideos(),
+        blogService.getAllPosts()
+      ]);
+
+      setStats({
+        totalVideos: videos.length,
+        totalBlogPosts: blogs.length,
+        featuredVideos: videos.filter(v => v.featured).length,
+      });
+
+      // Cargar actividades reales
+      const activityLogs = await activityService.getActivityLogs(20);
+      setAllActivities(activityLogs);
+
     } catch (error) {
-      console.error("Error loading user profile:", error);
+      console.error("Error loading dashboard data:", error);
+      // Si hay error, establecer valores por defecto
+      setStats({
+        totalVideos: 0,
+        totalBlogPosts: 0,
+        featuredVideos: 0,
+      });
+      setAllActivities([]);
+      toast({
+        title: "Warning",
+        description: "Some data could not be loaded. The activity log may not be available yet.",
+        variant: "default",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (!isAuthenticated) {
+  // Función helper para formatear fecha
+  const formatTimeAgo = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+    
+    if (diffInSeconds < 60) return `just now`;
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minute${Math.floor(diffInSeconds / 60) > 1 ? 's' : ''} ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hour${Math.floor(diffInSeconds / 3600) > 1 ? 's' : ''} ago`;
+    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} day${Math.floor(diffInSeconds / 86400) > 1 ? 's' : ''} ago`;
+    return `${Math.floor(diffInSeconds / 604800)} week${Math.floor(diffInSeconds / 604800) > 1 ? 's' : ''} ago`;
+  };
+
+  if (!isAuthenticated || loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -91,6 +149,30 @@ export default function AdminDashboardPage() {
       </div>
     );
   }
+
+  // Función helper para extraer título del data
+  const getTitleFromData = (data: Record<string, any> | undefined): string => {
+    if (!data) return "Unknown";
+    return data.title || data.name || `Item ${data.id || ""}`;
+  };
+
+  // Mapear activities a formato para mostrar
+  const mappedActivities = allActivities.map(activity => {
+    const title = getTitleFromData(activity.new_data) || getTitleFromData(activity.old_data);
+    const action = activity.action === 'create' ? 'created' : 
+                   activity.action === 'update' ? 'edited' : 
+                   activity.action === 'delete' ? 'deleted' :
+                   activity.action === 'feature' ? 'featured' :
+                   activity.action === 'unfeature' ? 'unfeatured' : activity.action;
+    
+    return {
+      type: activity.entity_type === 'video' ? "video" as const : "blog" as const,
+      action: action as "created" | "edited" | "deleted" | "featured" | "unfeatured",
+      title,
+      date: "recent", // La tabla no tiene timestamp separado, usar la ID como referencia
+      author: "System"
+    };
+  });
 
   const handleAddVideo = () => {
     if (!newVideo.title || !newVideo.videoUrl) {
@@ -124,29 +206,7 @@ export default function AdminDashboardPage() {
     });
   };
 
-  // Mock data
-  const stats = {
-    totalVideos: 12,
-    totalBlogPosts: 8,
-    featuredVideos: 3,
-  };
-
-  const allActivities = [
-    { type: "video", action: "published", title: "Miami Market Update", date: "2 hours ago", author: "You" },
-    { type: "blog", action: "published", title: "First Time Buyer Guide", date: "5 hours ago", author: "You" },
-    { type: "video", action: "published", title: "Luxury Properties Tour", date: "1 day ago", author: "You" },
-    { type: "video", action: "edited", title: "Understanding Market Trends", date: "2 days ago", author: "You" },
-    { type: "blog", action: "edited", title: "Investment Opportunities", date: "3 days ago", author: "You" },
-    { type: "video", action: "deleted", title: "Old Market Analysis", date: "4 days ago", author: "You" },
-    { type: "blog", action: "published", title: "Home Staging Tips", date: "5 days ago", author: "You" },
-    { type: "video", action: "published", title: "Neighborhood Spotlight", date: "6 days ago", author: "You" },
-    { type: "blog", action: "edited", title: "Financing Your Home", date: "1 week ago", author: "You" },
-    { type: "video", action: "published", title: "Real Estate Investment Guide", date: "1 week ago", author: "You" },
-    { type: "blog", action: "deleted", title: "Outdated Post", date: "2 weeks ago", author: "You" },
-    { type: "video", action: "published", title: "Miami Beach Tour", date: "2 weeks ago", author: "You" },
-  ];
-
-  const recentActivity = allActivities.slice(0, 5);
+  const recentActivity = mappedActivities.slice(0, 5);
   const filteredActivities = activityFilter === "all" 
     ? recentActivity 
     : recentActivity.filter(activity => activity.type === activityFilter);
@@ -296,7 +356,7 @@ export default function AdminDashboardPage() {
             className="w-full text-sm text-gray-600 hover:text-gray-900"
             onClick={() => setShowAllActivity(true)}
           >
-            View All Activity ({allActivities.length})
+            View All Activity ({mappedActivities.length})
           </Button>
         </div>
       </div>
@@ -312,49 +372,56 @@ export default function AdminDashboardPage() {
           </DialogHeader>
           
           <div className="overflow-y-auto max-h-[60vh] pr-2 space-y-3">
-            {allActivities.map((activity, index) => (
-              <div 
-                key={index} 
-                className="flex items-center gap-4 p-4 hover:bg-gray-50 rounded-lg transition-colors border border-gray-100"
-              >
-                <div className={`p-2.5 rounded-lg flex-shrink-0 ${
-                  activity.type === 'video' 
-                    ? 'bg-lime-100' 
-                    : 'bg-blue-100'
-                }`}>
-                  {activity.type === 'video' ? (
-                    <Video className="h-5 w-5 text-lime-600" />
-                  ) : (
-                    <FileText className="h-5 w-5 text-blue-600" />
-                  )}
-                </div>
-                
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <p className="text-sm font-medium text-gray-900">
-                      {activity.title}
-                    </p>
-                    <Badge 
-                      variant={
-                        activity.action === 'published' ? 'default' : 
-                        activity.action === 'edited' ? 'secondary' : 
-                        'destructive'
-                      }
-                      className="text-xs"
-                    >
-                      {activity.action}
-                    </Badge>
-                  </div>
-                  <p className="text-xs text-gray-500">
-                    {activity.author} · {activity.date}
-                  </p>
-                </div>
-
-                <button className="text-gray-400 hover:text-gray-600 p-1.5 rounded hover:bg-gray-100">
-                  <MoreVertical className="h-4 w-4" />
-                </button>
+            {mappedActivities.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <Clock className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                <p className="text-sm">No activities yet</p>
               </div>
-            ))}
+            ) : (
+              mappedActivities.map((activity, index) => (
+                <div 
+                  key={index} 
+                  className="flex items-center gap-4 p-4 hover:bg-gray-50 rounded-lg transition-colors border border-gray-100"
+                >
+                  <div className={`p-2.5 rounded-lg flex-shrink-0 ${
+                    activity.type === 'video' 
+                      ? 'bg-lime-100' 
+                      : 'bg-blue-100'
+                  }`}>
+                    {activity.type === 'video' ? (
+                      <Video className="h-5 w-5 text-lime-600" />
+                    ) : (
+                      <FileText className="h-5 w-5 text-blue-600" />
+                    )}
+                  </div>
+                  
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <p className="text-sm font-medium text-gray-900">
+                        {activity.title}
+                      </p>
+                      <Badge 
+                        variant={
+                          activity.action === 'published' ? 'default' : 
+                          activity.action === 'edited' ? 'secondary' : 
+                          'destructive'
+                        }
+                        className="text-xs"
+                      >
+                        {activity.action}
+                      </Badge>
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      {activity.author} · {activity.date}
+                    </p>
+                  </div>
+
+                  <button className="text-gray-400 hover:text-gray-600 p-1.5 rounded hover:bg-gray-100">
+                    <MoreVertical className="h-4 w-4" />
+                  </button>
+                </div>
+              ))
+            )}
           </div>
 
           <DialogFooter>
