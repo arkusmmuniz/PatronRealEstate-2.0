@@ -350,7 +350,7 @@ export const activityService = {
       const { data, error } = await supabaseAdmin
         .from('activity_log')
         .select('*')
-        .order('id', { ascending: false })
+        .order('occurred_at', { ascending: false })
         .limit(limit)
       
       if (error) {
@@ -371,7 +371,7 @@ export const activityService = {
         .from('activity_log')
         .select('*')
         .eq('entity_type', entityType)
-        .order('id', { ascending: false })
+        .order('occurred_at', { ascending: false })
         .limit(limit)
       
       if (error) {

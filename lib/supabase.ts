@@ -63,4 +63,5 @@ export interface ActivityLog {
   action: 'create' | 'update' | 'delete' | 'feature' | 'unfeature' // basado en la tabla real
   old_data?: Record<string, any> // jsonb
   new_data?: Record<string, any> // jsonb
+  occurred_at?: string // timestamptz (auto-generado por la BD)
 }

@@ -169,7 +169,7 @@ export default function AdminDashboardPage() {
       type: activity.entity_type === 'video' ? "video" as const : "blog" as const,
       action: action as "created" | "edited" | "deleted" | "featured" | "unfeatured",
       title,
-      date: "recent", // La tabla no tiene timestamp separado, usar la ID como referencia
+      date: activity.occurred_at ? formatTimeAgo(activity.occurred_at) : "unknown",
       author: "System"
     };
   });
@@ -379,47 +379,47 @@ export default function AdminDashboardPage() {
               </div>
             ) : (
               mappedActivities.map((activity, index) => (
-                <div 
-                  key={index} 
-                  className="flex items-center gap-4 p-4 hover:bg-gray-50 rounded-lg transition-colors border border-gray-100"
-                >
-                  <div className={`p-2.5 rounded-lg flex-shrink-0 ${
-                    activity.type === 'video' 
-                      ? 'bg-lime-100' 
-                      : 'bg-blue-100'
-                  }`}>
-                    {activity.type === 'video' ? (
-                      <Video className="h-5 w-5 text-lime-600" />
-                    ) : (
-                      <FileText className="h-5 w-5 text-blue-600" />
-                    )}
-                  </div>
-                  
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <p className="text-sm font-medium text-gray-900">
-                        {activity.title}
-                      </p>
-                      <Badge 
-                        variant={
-                          activity.action === 'published' ? 'default' : 
-                          activity.action === 'edited' ? 'secondary' : 
-                          'destructive'
-                        }
-                        className="text-xs"
-                      >
-                        {activity.action}
-                      </Badge>
-                    </div>
-                    <p className="text-xs text-gray-500">
-                      {activity.author} · {activity.date}
-                    </p>
-                  </div>
-
-                  <button className="text-gray-400 hover:text-gray-600 p-1.5 rounded hover:bg-gray-100">
-                    <MoreVertical className="h-4 w-4" />
-                  </button>
+              <div 
+                key={index} 
+                className="flex items-center gap-4 p-4 hover:bg-gray-50 rounded-lg transition-colors border border-gray-100"
+              >
+                <div className={`p-2.5 rounded-lg flex-shrink-0 ${
+                  activity.type === 'video' 
+                    ? 'bg-lime-100' 
+                    : 'bg-blue-100'
+                }`}>
+                  {activity.type === 'video' ? (
+                    <Video className="h-5 w-5 text-lime-600" />
+                  ) : (
+                    <FileText className="h-5 w-5 text-blue-600" />
+                  )}
                 </div>
+                
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <p className="text-sm font-medium text-gray-900">
+                      {activity.title}
+                    </p>
+                    <Badge 
+                      variant={
+                        activity.action === 'published' ? 'default' : 
+                        activity.action === 'edited' ? 'secondary' : 
+                        'destructive'
+                      }
+                      className="text-xs"
+                    >
+                      {activity.action}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-gray-500">
+                    {activity.author} · {activity.date}
+                  </p>
+                </div>
+
+                <button className="text-gray-400 hover:text-gray-600 p-1.5 rounded hover:bg-gray-100">
+                  <MoreVertical className="h-4 w-4" />
+                </button>
+              </div>
               ))
             )}
           </div>
