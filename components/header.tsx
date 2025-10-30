@@ -17,12 +17,12 @@ const navigationItems = [
   { name: "Sellers", href: "/selling" },
   { name: "My Home Value", href: "/home-value" },
   { name: "Rent/Property Mgmt", href: "/property-management" },
-  { name: "Collections", href: "/collections" },
+  // { name: "Collections", href: "/collections" }, // TEMPORALMENTE OCULTO
   { name: "Local Communities", href: "/communities" },
   { name: "Blog", href: "/blog" },
   { name: "FabFriday", href: "/videos" },
   { name: "Testimonials", href: "/testimonials" },
-  { name: "IDXBroker Integration", href: "/idxbroker-integration" },
+  // { name: "IDXBroker Integration", href: "/idxbroker-integration" }, // TEMPORALMENTE OCULTO
   { name: "About", href: "/about" },
 ];
 

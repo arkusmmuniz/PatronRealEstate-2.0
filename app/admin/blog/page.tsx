@@ -1,27 +1,25 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   FileText,
   Plus,
   Edit,
   Trash2,
-  Search,
-  Filter,
   Upload,
   Eye,
   Calendar,
   User,
   MoreVertical,
   Archive,
-  EyeOff,
   X,
+  Star,
+  Loader2,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -47,60 +45,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { blogService } from "@/lib/services";
+import { BlogPost } from "@/lib/supabase";
 
-interface BlogPost {
-  id: number;
-  title: string;
-  excerpt: string;
-  content: string;
-  author: string;
-  authorEmail: string;
-  category: string;
-  status: string;
-  publishDate: string;
-  imageUrl: string;
-  readTime: string;
-  featured: boolean;
-  views: number;
-  file?: File;
-}
-
-const mockBlogPosts: BlogPost[] = [
-  {
-    id: 1,
-    title: "Why Now Might Be the Best Time for Buyers in 2025",
-    excerpt:
-      "After years of intense competition and sky-high prices, the U.S. housing market is finally showing signs of relief for homebuyers—and the timing couldn't be better.",
-    content:
-      "After years of intense competition and sky-high prices, the U.S. housing market is finally showing signs of relief for homebuyers—and the timing couldn't be better. According to a recent article from MarketWatch, housing inventory in the U.S. has climbed to over 1 million active listings, the highest level since before the pandemic. With more homes on the market and fewer bidding wars, buyers now have more room to breathe, think, and negotiate.",
-    author: "Patron Real Estate Services",
-    authorEmail: "patronrealestateservices@gmail.com",
-    category: "Market Analysis",
-    status: "published",
-    publishDate: "2024-01-15",
-    imageUrl: "/placeholder.jpg",
-    readTime: "8 min read",
-    featured: true,
-    views: 1247,
-  },
-  {
-    id: 2,
-    title: "Home Maintenance Calendar: What to Do Every Month",
-    excerpt:
-      "Prevent costly repairs with our month-by-month maintenance checklist. From HVAC to roof inspections, keep your home in top condition year-round.",
-    content:
-      "Prevent costly repairs with our month-by-month maintenance checklist. From HVAC to roof inspections, keep your home in top condition year-round. Regular maintenance is key to preserving your home's value and preventing expensive repairs down the line.",
-    author: "Patron Real Estate Services",
-    authorEmail: "patronrealestateservices@gmail.com",
-    category: "Home Care",
-    status: "draft",
-    publishDate: "2024-01-10",
-    imageUrl: "/placeholder.jpg",
-    readTime: "14 min read",
-    featured: false,
-    views: 0,
-  },
-];
+// Usamos la interfaz BlogPost de supabase.ts
 
 const categories = [
   "Market Analysis",
@@ -113,10 +61,8 @@ const categories = [
 
 export default function AdminBlogPage() {
   const { toast } = useToast();
-  const [blogPosts, setBlogPosts] = useState(mockBlogPosts);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -126,24 +72,31 @@ export default function AdminBlogPage() {
     title: "",
     excerpt: "",
     content: "",
-    category: "",
-    author: "",
-    authorEmail: "",
   });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const filteredPosts = blogPosts.filter((post) => {
-    const matchesSearch =
-      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.author.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "all" || post.category === selectedCategory;
-    const matchesStatus =
-      selectedStatus === "all" || post.status === selectedStatus;
+  // Cargar posts al montar el componente
+  useEffect(() => {
+    loadBlogPosts();
+  }, []);
 
-    return matchesSearch && matchesCategory && matchesStatus;
-  });
+  const loadBlogPosts = async () => {
+    try {
+      setLoading(true);
+      const posts = await blogService.getAllPosts();
+      setBlogPosts(posts);
+    } catch (error) {
+      console.error('Error loading blog posts:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load blog posts",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -175,14 +128,8 @@ export default function AdminBlogPage() {
     }
   };
 
-  const handleUploadPost = () => {
-    if (
-      !newPost.title ||
-      !newPost.category ||
-      !newPost.author ||
-      !newPost.authorEmail ||
-      !newPost.content
-    ) {
+  const handleUploadPost = async () => {
+    if (!newPost.title || !newPost.content) {
       toast({
         title: "Missing information",
         description: "Please fill in all required fields",
@@ -191,43 +138,56 @@ export default function AdminBlogPage() {
       return;
     }
 
-    const post: BlogPost = {
-      id: blogPosts.length + 1,
-      ...newPost,
-      status: "draft",
-      publishDate: new Date().toISOString().split("T")[0],
-      imageUrl: selectedFile
-        ? URL.createObjectURL(selectedFile)
-        : "/placeholder.jpg",
-      readTime: "5 min read",
-      featured: false,
-      views: 0,
-      file: selectedFile,
-    };
+    try {
+      console.log('Creating blog post with data:', newPost);
+      
+      const postData = {
+        title: newPost.title,
+        content: newPost.content,
+        status: "draft" as const,
+      };
 
-    setBlogPosts([...blogPosts, post]);
+      console.log('Blog post data to send:', postData);
+      const newPostData = await blogService.createPost(postData);
+      console.log('Blog post created successfully:', newPostData);
+      setBlogPosts([newPostData, ...blogPosts]);
+      
     setNewPost({
       title: "",
       excerpt: "",
       content: "",
-      category: "",
-      author: "",
-      authorEmail: "",
     });
     setSelectedFile(null);
     setShowUploadModal(false);
 
     toast({
       title: "Blog post created successfully",
-      description: `${post.title} has been added to your blog`,
-    });
+        description: `${newPostData.title} has been added to your blog`,
+      });
+    } catch (error: any) {
+      console.error('Error creating blog post:', error);
+      console.error('Error details:', {
+        message: error?.message,
+        code: error?.code,
+        details: error?.details,
+        hint: error?.hint
+      });
+      toast({
+        title: "Error",
+        description: `Failed to create blog post: ${error?.message || 'Unknown error'}`,
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleEditPost = () => {
-    if (editingPost) {
+  const handleEditPost = async () => {
+    if (!editingPost) return;
+
+    try {
+      const updatedPost = await blogService.updatePost(editingPost.id, editingPost);
       setBlogPosts(
         blogPosts.map((p) =>
-          p.id === editingPost.id ? { ...p, ...editingPost } : p
+          p.id === editingPost.id ? updatedPost : p
         )
       );
       setEditingPost(null);
@@ -237,21 +197,40 @@ export default function AdminBlogPage() {
         title: "Blog post updated",
         description: "Blog post information has been updated successfully",
       });
+    } catch (error) {
+      console.error('Error updating blog post:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update blog post",
+        variant: "destructive",
+      });
     }
   };
 
-  const handleDeletePost = (id: number) => {
+  const handleDeletePost = async (id: number) => {
     const post = blogPosts.find((p) => p.id === id);
-    if (post) {
+    if (!post) return;
+
+    try {
+      await blogService.deletePost(id);
       setBlogPosts(blogPosts.filter((p) => p.id !== id));
       toast({
         title: "Blog post deleted",
         description: `${post.title} has been removed from your blog`,
       });
+    } catch (error) {
+      console.error('Error deleting blog post:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete blog post",
+        variant: "destructive",
+      });
     }
   };
 
-  const handleArchivePost = (id: number) => {
+  const handleArchivePost = async (id: number) => {
+    try {
+      await blogService.updatePost(id, { status: "archived" });
     setBlogPosts(
       blogPosts.map((p) => (p.id === id ? { ...p, status: "archived" } : p))
     );
@@ -261,11 +240,21 @@ export default function AdminBlogPage() {
       toast({
         title: "Blog post archived",
         description: `${post.title} has been moved to archive`,
+        });
+      }
+    } catch (error) {
+      console.error('Error archiving blog post:', error);
+      toast({
+        title: "Error",
+        description: "Failed to archive blog post",
+        variant: "destructive",
       });
     }
   };
 
-  const handleStatusChange = (id: number, newStatus: string) => {
+  const handleStatusChange = async (id: number, newStatus: string) => {
+    try {
+      await blogService.updatePost(id, { status: newStatus as any });
     setBlogPosts(
       blogPosts.map((p) => (p.id === id ? { ...p, status: newStatus } : p))
     );
@@ -275,6 +264,61 @@ export default function AdminBlogPage() {
       toast({
         title: "Status updated",
         description: `${post.title} is now ${newStatus}`,
+        });
+      }
+    } catch (error) {
+      console.error('Error updating post status:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update post status",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleToggleFeatured = async (id: number) => {
+    const post = blogPosts.find((p) => p.id === id);
+    if (!post) return;
+
+    try {
+    const newFeaturedState = !post.featured;
+
+    if (newFeaturedState) {
+        // Desactivar todos los demás featured
+        await Promise.all(
+          blogPosts
+            .filter(p => p.featured && p.id !== id)
+            .map(p => blogService.updatePost(p.id, { featured: false }))
+        );
+        
+        // Activar el seleccionado
+        await blogService.updatePost(id, { featured: true });
+        
+      setBlogPosts(
+        blogPosts.map((p) => (p.id === id ? { ...p, featured: true } : { ...p, featured: false }))
+      );
+        
+      toast({
+        title: "Post featured",
+        description: `${post.title} is now featured`,
+      });
+    } else {
+        await blogService.updatePost(id, { featured: false });
+      setBlogPosts(
+        blogPosts.map((p) => (p.id === id ? { ...p, featured: false } : p))
+      );
+        
+      toast({
+        title: "Post unfeatured",
+        description: `${post.title} is no longer featured`,
+        });
+      }
+    } catch (error) {
+      console.error('Error toggling featured status:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update featured status",
+        variant: "destructive",
       });
     }
   };
@@ -284,21 +328,31 @@ export default function AdminBlogPage() {
     (p) => p.status === "published"
   ).length;
   const archivedPosts = blogPosts.filter((p) => p.status === "archived").length;
-  const totalViews = blogPosts.reduce((sum, p) => sum + p.views, 0);
   const featuredPosts = blogPosts.filter((p) => p.featured).length;
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-lime-600" />
+          <p className="text-muted-foreground">Loading blog posts...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Blog Management</h1>
-          <p className="text-gray-600 mt-2">
-            Create, edit, and manage your blog articles and content.
+          <h1 className="text-2xl font-bold text-gray-900">Blog Management</h1>
+          <p className="text-sm text-gray-600">
+            Create, edit, and manage your blog articles and content
           </p>
         </div>
         <Button
-          className="bg-primary hover:bg-primary/90"
+          className="bg-gradient-to-r from-lime-500 to-lime-600 hover:from-lime-600 hover:to-lime-700"
           onClick={() => setShowUploadModal(true)}
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -306,129 +360,48 @@ export default function AdminBlogPage() {
         </Button>
       </div>
 
-      {/* Metrics Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <FileText className="h-5 w-5 text-blue-600" />
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Posts</p>
-                <p className="text-2xl font-bold text-gray-900">{totalPosts}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Eye className="h-5 w-5 text-green-600" />
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Views</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {totalViews.toLocaleString()}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <FileText className="h-5 w-5 text-emerald-600" />
-              <div>
-                <p className="text-sm font-medium text-gray-600">Published</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {publishedPosts}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Eye className="h-5 w-5 text-purple-600" />
-              <div>
-                <p className="text-sm font-medium text-gray-600">Featured</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {featuredPosts}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Archive className="h-5 w-5 text-orange-600" />
-              <div>
-                <p className="text-sm font-medium text-gray-600">Archived</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {archivedPosts}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Search and Filters */}
-      <Card className="bg-white shadow-sm border border-gray-200">
-        <CardContent className="p-6">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input
-                type="text"
-                placeholder="Search posts by title or author..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <Select
-              value={selectedCategory}
-              onValueChange={setSelectedCategory}
-            >
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="All Categories" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                {categories.map((category) => (
-                  <SelectItem key={category} value={category}>
-                    {category}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="All Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="published">Published</SelectItem>
-                <SelectItem value="draft">Draft</SelectItem>
-                <SelectItem value="archived">Archived</SelectItem>
-              </SelectContent>
-            </Select>
+      {/* Compact Metrics */}
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <div className="flex items-center gap-8">
+          <div>
+            <p className="text-xs text-gray-600 mb-1">Total Posts</p>
+            <p className="text-2xl font-bold text-gray-900">{totalPosts}</p>
           </div>
-        </CardContent>
-      </Card>
+          
+          <div className="h-12 w-px bg-gray-200" />
+          
+          <div>
+            <p className="text-xs text-gray-600 mb-1">Published</p>
+            <p className="text-2xl font-bold text-gray-900">{publishedPosts}</p>
+          </div>
+
+          <div className="h-12 w-px bg-gray-200" />
+
+          <div>
+            <p className="text-xs text-gray-600 mb-1">Featured</p>
+            <p className="text-2xl font-bold text-gray-900">{featuredPosts}</p>
+          </div>
+
+          <div className="h-12 w-px bg-gray-200" />
+
+          <div>
+            <p className="text-xs text-gray-600 mb-1">Archived</p>
+            <p className="text-2xl font-bold text-gray-900">{archivedPosts}</p>
+          </div>
+        </div>
+      </div>
 
       {/* Blog Posts List */}
       <Card className="bg-white shadow-sm border border-gray-200">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <FileText className="w-5 h-5 text-primary" />
-            Blog Posts ({filteredPosts.length})
+            Blog Posts ({blogPosts.length})
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {filteredPosts.map((post) => (
+            {blogPosts.map((post) => (
               <div
                 key={post.id}
                 className="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors"
@@ -442,16 +415,16 @@ export default function AdminBlogPage() {
                       {post.title}
                     </h3>
                     <p className="text-sm text-gray-600 line-clamp-2">
-                      {post.excerpt}
+                      {post.excerpt || "No excerpt available"}
                     </p>
                     <div className="flex items-center space-x-4 mt-1">
                       <span className="text-xs text-gray-500 flex items-center">
                         <User className="w-3 h-3 mr-1" />
-                        {post.author}
+                        Patron Real Estate Services
                       </span>
                       <span className="text-xs text-gray-500 flex items-center">
                         <Calendar className="w-3 h-3 mr-1" />
-                        {post.publishDate}
+                        {post.publish_date}
                       </span>
                       <Badge
                         variant={
@@ -473,85 +446,77 @@ export default function AdminBlogPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-4">
-                  <div className="text-right text-sm">
-                    <div className="flex items-center space-x-4 text-gray-600">
-                      <span className="flex items-center">
-                        <Eye className="w-4 h-4 mr-1" />
-                        {post.views}
-                      </span>
-                      <span className="text-xs text-gray-500">
-                        {post.readTime}
-                      </span>
-                    </div>
-                  </div>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setPreviewPost(post);
+                      setShowPreviewModal(true);
+                    }}
+                    title="Preview Post"
+                  >
+                    <Eye className="w-4 h-4" />
+                  </Button>
 
-                  <div className="flex items-center space-x-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setPreviewPost(post);
-                        setShowPreviewModal(true);
-                      }}
-                      title="Preview Post"
-                    >
-                      <Eye className="w-4 h-4" />
-                    </Button>
-
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="sm">
-                          <MoreVertical className="w-4 h-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="sm">
+                        <MoreVertical className="w-4 h-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setEditingPost(post);
+                          setShowEditModal(true);
+                        }}
+                      >
+                        <Edit className="w-4 h-4 mr-2" />
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          handleStatusChange(
+                            post.id,
+                            post.status === "published"
+                              ? "draft"
+                              : "published"
+                          )
+                        }
+                      >
+                        {post.status === "published"
+                          ? "Unpublish"
+                          : "Publish"}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => handleToggleFeatured(post.id)}
+                      >
+                        <Star className={`w-4 h-4 mr-2 ${post.featured ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+                        {post.featured ? "Unfeature" : "Feature"}
+                      </DropdownMenuItem>
+                      {post.status !== "archived" && (
                         <DropdownMenuItem
-                          onClick={() => {
-                            setEditingPost(post);
-                            setShowEditModal(true);
-                          }}
+                          onClick={() => handleArchivePost(post.id)}
                         >
-                          <Edit className="w-4 h-4 mr-2" />
-                          Edit
+                          <Archive className="w-4 h-4 mr-2" />
+                          Archive
                         </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() =>
-                            handleStatusChange(
-                              post.id,
-                              post.status === "published"
-                                ? "draft"
-                                : "published"
-                            )
-                          }
-                        >
-                          {post.status === "published"
-                            ? "Unpublish"
-                            : "Publish"}
-                        </DropdownMenuItem>
-                        {post.status !== "archived" && (
-                          <DropdownMenuItem
-                            onClick={() => handleArchivePost(post.id)}
-                          >
-                            <Archive className="w-4 h-4 mr-2" />
-                            Archive
-                          </DropdownMenuItem>
-                        )}
-                        <DropdownMenuItem
-                          className="text-red-600"
-                          onClick={() => handleDeletePost(post.id)}
-                        >
-                          <Trash2 className="w-4 h-4 mr-2" />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
+                      )}
+                      <DropdownMenuItem
+                        className="text-red-600"
+                        onClick={() => handleDeletePost(post.id)}
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </div>
             ))}
 
-            {filteredPosts.length === 0 && (
+            {blogPosts.length === 0 && (
               <div className="text-center py-12 text-gray-500">
                 <FileText className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                 <h3 className="text-lg font-medium mb-2">
@@ -577,39 +542,17 @@ export default function AdminBlogPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="title">Post Title *</Label>
-                <Input
-                  id="title"
-                  value={newPost.title}
-                  onChange={(e) =>
-                    setNewPost({ ...newPost, title: e.target.value })
-                  }
-                  placeholder="Enter post title"
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="category">Category *</Label>
-                <Select
-                  value={newPost.category}
-                  onValueChange={(value) =>
-                    setNewPost({ ...newPost, category: value })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map((category) => (
-                      <SelectItem key={category} value={category}>
-                        {category}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            <div>
+              <Label htmlFor="title">Post Title *</Label>
+              <Input
+                id="title"
+                value={newPost.title}
+                onChange={(e) =>
+                  setNewPost({ ...newPost, title: e.target.value })
+                }
+                placeholder="Enter post title"
+                required
+              />
             </div>
             <div>
               <Label htmlFor="excerpt">Excerpt</Label>
@@ -635,33 +578,6 @@ export default function AdminBlogPage() {
                 rows={8}
                 required
               />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="author">Author Name *</Label>
-                <Input
-                  id="author"
-                  value={newPost.author}
-                  onChange={(e) =>
-                    setNewPost({ ...newPost, author: e.target.value })
-                  }
-                  placeholder="Enter author name"
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="authorEmail">Author Email *</Label>
-                <Input
-                  id="authorEmail"
-                  type="email"
-                  value={newPost.authorEmail}
-                  onChange={(e) =>
-                    setNewPost({ ...newPost, authorEmail: e.target.value })
-                  }
-                  placeholder="Enter author email"
-                  required
-                />
-              </div>
             </div>
             <div>
               <Label htmlFor="imageFile">Featured Image</Label>
@@ -730,46 +646,24 @@ export default function AdminBlogPage() {
           </DialogHeader>
           {editingPost && (
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="editTitle">Post Title</Label>
-                  <Input
-                    id="editTitle"
-                    value={editingPost.title}
-                    onChange={(e) =>
-                      setEditingPost({
-                        ...editingPost,
-                        title: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="editCategory">Category</Label>
-                  <Select
-                    value={editingPost.category}
-                    onValueChange={(value) =>
-                      setEditingPost({ ...editingPost, category: value })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem key={category} value={category}>
-                          {category}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div>
+                <Label htmlFor="editTitle">Post Title</Label>
+                <Input
+                  id="editTitle"
+                  value={editingPost.title}
+                  onChange={(e) =>
+                    setEditingPost({
+                      ...editingPost,
+                      title: e.target.value,
+                    })
+                  }
+                />
               </div>
               <div>
                 <Label htmlFor="editExcerpt">Excerpt</Label>
                 <Textarea
                   id="editExcerpt"
-                  value={editingPost.excerpt}
+                  value={editingPost.excerpt || ""}
                   onChange={(e) =>
                     setEditingPost({
                       ...editingPost,
@@ -793,38 +687,23 @@ export default function AdminBlogPage() {
                   rows={8}
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="editAuthor">Author Name</Label>
-                  <Input
-                    id="editAuthor"
-                    value={editingPost.author}
-                    onChange={(e) =>
-                      setEditingPost({
-                        ...editingPost,
-                        author: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="editStatus">Status</Label>
-                  <Select
-                    value={editingPost.status}
-                    onValueChange={(value) =>
-                      setEditingPost({ ...editingPost, status: value })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="draft">Draft</SelectItem>
-                      <SelectItem value="published">Published</SelectItem>
-                      <SelectItem value="archived">Archived</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div>
+                <Label htmlFor="editStatus">Status</Label>
+                <Select
+                  value={editingPost.status}
+                  onValueChange={(value) =>
+                    setEditingPost({ ...editingPost, status: value })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="draft">Draft</SelectItem>
+                    <SelectItem value="published">Published</SelectItem>
+                    <SelectItem value="archived">Archived</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           )}
@@ -851,12 +730,12 @@ export default function AdminBlogPage() {
               <div className="space-y-2">
                 <h3 className="text-2xl font-bold">{previewPost.title}</h3>
                 <div className="flex items-center space-x-4 text-sm text-gray-500">
-                  <span>By {previewPost.author}</span>
-                  <span>Date: {previewPost.publishDate}</span>
-                  <span>Read time: {previewPost.readTime}</span>
-                  <Badge variant="outline">{previewPost.category}</Badge>
+                  <span>By Patron Real Estate Services</span>
+                  <span>Date: {previewPost.publish_date}</span>
+                  <span>Read time: {previewPost.read_time}</span>
+                  <Badge variant="outline">Blog Post</Badge>
                 </div>
-                {previewPost.excerpt && (
+                {previewPost.excerpt && previewPost.excerpt.trim() && (
                   <p className="text-lg text-gray-600 italic">
                     {previewPost.excerpt}
                   </p>
