@@ -1,6 +1,7 @@
 "use client";
 
 import { IDXBrokerWidget } from "@/components/idxbroker-widget";
+import { IDXBrokerQuickSearchWidget } from "@/components/idxbroker-quicksearch-widget";
 
 export default function IDXBrokerIntegrationPage() {
 
@@ -32,6 +33,11 @@ export default function IDXBrokerIntegrationPage() {
               widgetId="121097" 
               title="Virtual Showing" 
             />
+          </div>
+
+          {/* Quick Search Section */}
+          <div className="mt-12">
+            <IDXBrokerQuickSearchWidget />
           </div>
         </div>
       </div>
