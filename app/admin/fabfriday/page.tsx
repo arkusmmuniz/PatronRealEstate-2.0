@@ -217,7 +217,7 @@ export default function FabFridayAdminPage() {
     <TooltipProvider>
       <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">FabFriday Management</h1>
           <p className="text-sm text-gray-600">
@@ -231,7 +231,7 @@ export default function FabFridayAdminPage() {
               Add Video
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-lg md:max-w-xl lg:max-w-2xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
             <DialogHeader>
               <DialogTitle>Add FabFriday Video</DialogTitle>
               <DialogDescription>
@@ -293,14 +293,14 @@ export default function FabFridayAdminPage() {
       </div>
 
       {/* Compact Metrics */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-        <div className="flex items-center gap-8">
+      <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
+        <div className="flex items-center gap-6 sm:gap-8 flex-wrap">
           <div>
             <p className="text-xs text-gray-600 mb-1">Total Videos</p>
             <p className="text-2xl font-bold text-gray-900">{totalVideos}</p>
           </div>
           
-          <div className="h-12 w-px bg-gray-200" />
+          <div className="hidden sm:block h-12 w-px bg-gray-200" />
           
           <div>
             <p className="text-xs text-gray-600 mb-1">Featured</p>
@@ -315,7 +315,7 @@ export default function FabFridayAdminPage() {
             </div>
           </div>
 
-          <div className="h-12 w-px bg-gray-200" />
+          <div className="hidden sm:block h-12 w-px bg-gray-200" />
 
           <div>
             <p className="text-xs text-gray-600 mb-1">Last Upload</p>
@@ -325,7 +325,7 @@ export default function FabFridayAdminPage() {
       </div>
 
       {/* Videos List */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+      <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
         <h3 className="font-semibold text-gray-900 mb-6 flex items-center gap-2">
           <Video className="h-5 w-5" />
           FabFriday Videos ({videos.length})
@@ -334,10 +334,10 @@ export default function FabFridayAdminPage() {
             {videos.map((video) => (
               <div
                 key={video.id}
-                className="flex items-start gap-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-all duration-200 hover:shadow-sm"
+                className="flex items-start gap-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-all duration-200 hover:shadow-sm flex-wrap"
               >
                 {/* Thumbnail preview */}
-                <div className="w-48 h-28 rounded-lg flex items-center justify-center flex-shrink-0 border border-gray-200 overflow-hidden">
+                <div className="w-32 h-20 sm:w-40 sm:h-24 md:w-48 md:h-28 rounded-lg flex items-center justify-center flex-shrink-0 border border-gray-200 overflow-hidden">
                   <img 
                     src={getVideoThumbnail(video.video_url)} 
                     alt={video.title}
@@ -350,9 +350,9 @@ export default function FabFridayAdminPage() {
                 </div>
 
                 {/* Info */}
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2">
                         <h3 className="font-semibold text-gray-900 text-lg">
                           {video.title}
@@ -395,7 +395,7 @@ export default function FabFridayAdminPage() {
                 </div>
 
                 {/* Actions */}
-                <div className="flex flex-col gap-2">
+                <div className="order-last w-full sm:order-none sm:w-auto flex flex-row sm:flex-col gap-2 mt-2 sm:mt-0 sm:ml-auto">
                   {(() => {
                     const featuredCount = videos.filter((v) => v.featured).length;
                     const isMaxReached = featuredCount >= 1;

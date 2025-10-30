@@ -344,7 +344,7 @@ export default function AdminBlogPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Blog Management</h1>
           <p className="text-sm text-gray-600">
@@ -361,28 +361,28 @@ export default function AdminBlogPage() {
       </div>
 
       {/* Compact Metrics */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-        <div className="flex items-center gap-8">
+      <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
+        <div className="flex items-center gap-6 sm:gap-8 flex-wrap">
           <div>
             <p className="text-xs text-gray-600 mb-1">Total Posts</p>
             <p className="text-2xl font-bold text-gray-900">{totalPosts}</p>
           </div>
           
-          <div className="h-12 w-px bg-gray-200" />
+          <div className="hidden sm:block h-12 w-px bg-gray-200" />
           
           <div>
             <p className="text-xs text-gray-600 mb-1">Published</p>
             <p className="text-2xl font-bold text-gray-900">{publishedPosts}</p>
           </div>
 
-          <div className="h-12 w-px bg-gray-200" />
+          <div className="hidden sm:block h-12 w-px bg-gray-200" />
 
           <div>
             <p className="text-xs text-gray-600 mb-1">Featured</p>
             <p className="text-2xl font-bold text-gray-900">{featuredPosts}</p>
           </div>
 
-          <div className="h-12 w-px bg-gray-200" />
+          <div className="hidden sm:block h-12 w-px bg-gray-200" />
 
           <div>
             <p className="text-xs text-gray-600 mb-1">Archived</p>
@@ -404,20 +404,20 @@ export default function AdminBlogPage() {
             {blogPosts.map((post) => (
               <div
                 key={post.id}
-                className="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors gap-3 flex-wrap"
               >
-                <div className="flex items-center space-x-4">
-                  <div className="w-16 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
+                <div className="flex items-center space-x-4 min-w-0">
+                  <div className="w-16 h-12 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
                     <FileText className="w-6 h-6 text-gray-500" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <h3 className="font-semibold text-gray-900">
                       {post.title}
                     </h3>
                     <p className="text-sm text-gray-600 line-clamp-2">
                       {post.excerpt || "No excerpt available"}
                     </p>
-                    <div className="flex items-center space-x-4 mt-1">
+                    <div className="flex items-center gap-4 mt-1 flex-wrap">
                       <span className="text-xs text-gray-500 flex items-center">
                         <User className="w-3 h-3 mr-1" />
                         Patron Real Estate Services
@@ -446,7 +446,7 @@ export default function AdminBlogPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 sm:ml-auto">
                   <Button
                     variant="outline"
                     size="sm"
@@ -533,7 +533,7 @@ export default function AdminBlogPage() {
 
       {/* Create Blog Post Modal */}
       <Dialog open={showUploadModal} onOpenChange={setShowUploadModal}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-lg md:max-w-2xl lg:max-w-4xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle>Create New Blog Post</DialogTitle>
             <DialogDescription>
@@ -637,7 +637,7 @@ export default function AdminBlogPage() {
 
       {/* Edit Blog Post Modal */}
       <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-lg md:max-w-2xl lg:max-w-4xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle>Edit Blog Post</DialogTitle>
             <DialogDescription>
@@ -718,7 +718,7 @@ export default function AdminBlogPage() {
 
       {/* Blog Post Preview Modal */}
       <Dialog open={showPreviewModal} onOpenChange={setShowPreviewModal}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-lg md:max-w-2xl lg:max-w-4xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle>Blog Post Preview</DialogTitle>
             <DialogDescription>

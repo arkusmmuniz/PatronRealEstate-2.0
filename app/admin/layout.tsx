@@ -66,6 +66,13 @@ export default function AdminLayout({
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [userEmail, setUserEmail] = useState<string>("");
   const pathname = usePathname();
+  
+  const getCurrentTitle = () => {
+    const exact = navigationItems.find((item) => item.href === pathname);
+    if (exact) return exact.name;
+    const match = navigationItems.find((item) => pathname.startsWith(item.href));
+    return match?.name || "Dashboard";
+  };
 
   // Cargar perfil del usuario al montar el componente
   useEffect(() => {
@@ -192,7 +199,28 @@ export default function AdminLayout({
       <div className={`transition-all duration-300 ${
         sidebarCollapsed ? 'lg:ml-28' : 'lg:ml-72'
       }`}>
-        <main className="p-8">{children}</main>
+        {/* Top header */}
+        <header className="sticky top-0 z-40 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-200">
+          <div className="px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="lg:hidden"
+                onClick={() => setSidebarOpen(true)}
+                aria-label="Open sidebar"
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+              <h1 className="text-base sm:text-lg font-semibold text-gray-900">{getCurrentTitle()}</h1>
+            </div>
+            <div className="flex items-center gap-2">
+              {/* espacio para acciones rápidas futuras */}
+            </div>
+          </div>
+        </header>
+
+        <main className="p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
     </div>
   );
