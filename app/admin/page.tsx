@@ -174,7 +174,7 @@ export default function AdminDashboardPage() {
     };
   });
 
-  const handleAddVideo = () => {
+  const handleAddVideo = async () => {
     if (!newVideo.title || !newVideo.videoUrl) {
       toast({
         title: "Required fields",
@@ -183,14 +183,33 @@ export default function AdminDashboardPage() {
       });
       return;
     }
-    router.push("/admin/fabfriday");
-    toast({
-      title: "Video added",
-      description: "Redirecting to manage your video",
-    });
+    try {
+      const created = await videoService.createVideo({
+        title: newVideo.title,
+        description: newVideo.description || "",
+        video_url: newVideo.videoUrl,
+        featured: false,
+      });
+
+      setShowVideoModal(false);
+      setNewVideo({ title: "", description: "", videoUrl: "" });
+      setStats((s) => ({ ...s, totalVideos: s.totalVideos + 1 }));
+      await loadDashboardData();
+      toast({
+        title: "Video added",
+        description: `${created.title} has been added to FabFriday`,
+      });
+    } catch (error: any) {
+      console.error("Error creating video from dashboard:", error);
+      toast({
+        title: "Error",
+        description: error?.message || "Failed to add video",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleAddBlog = () => {
+  const handleAddBlog = async () => {
     if (!newBlog.title || !newBlog.content) {
       toast({
         title: "Required fields",
@@ -199,11 +218,29 @@ export default function AdminDashboardPage() {
       });
       return;
     }
-    router.push("/admin/blog");
-    toast({
-      title: "Blog post added",
-      description: "Redirecting to manage your post",
-    });
+    try {
+      const created = await blogService.createPost({
+        title: newBlog.title,
+        content: newBlog.content,
+        status: "draft" as const,
+        slug: undefined as any, // service genera slug si falta
+      } as any);
+      setShowBlogModal(false);
+      setNewBlog({ title: "", content: "" });
+      setStats((s) => ({ ...s, totalBlogPosts: s.totalBlogPosts + 1 }));
+      await loadDashboardData();
+      toast({
+        title: "Blog post created",
+        description: `${created.title} has been added to your blog`,
+      });
+    } catch (error: any) {
+      console.error("Error creating blog from dashboard:", error);
+      toast({
+        title: "Error",
+        description: error?.message || "Failed to create blog post",
+        variant: "destructive",
+      });
+    }
   };
 
   const recentActivity = mappedActivities.slice(0, 5);
@@ -435,7 +472,7 @@ export default function AdminDashboardPage() {
       {/* Modals */}
       {/* Add Video Modal */}
       <Dialog open={showVideoModal} onOpenChange={setShowVideoModal}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-lg md:max-w-xl lg:max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Add FabFriday Video</DialogTitle>
             <DialogDescription>
@@ -491,7 +528,7 @@ export default function AdminDashboardPage() {
 
       {/* Add Blog Modal */}
       <Dialog open={showBlogModal} onOpenChange={setShowBlogModal}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-lg md:max-w-xl lg:max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Create Blog Post</DialogTitle>
             <DialogDescription>
