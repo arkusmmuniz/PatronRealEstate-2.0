@@ -249,6 +249,16 @@ export default function CommunitiesPage() {
                     onClick={() => {
                       if (community.id === 'tujunga') {
                         router.push('/communities/tujunga');
+                      } else if (community.id === 'shadow-hills') {
+                        router.push('/communities/shadow-hills');
+                      } else if (community.id === 'la-crescenta') {
+                        router.push('/communities/la-crescenta');
+                      } else if (community.id === 'altadena') {
+                        router.push('/communities/altadena');
+                      } else if (community.id === 'nela') {
+                        router.push('/communities/nela');
+                      } else if (community.id === 'sunland') {
+                        router.push('/communities/sunland');
                       } else {
                         router.push('/property-management');
                       }
