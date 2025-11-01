@@ -360,6 +360,65 @@ export default function AdminBlogPage() {
         </Button>
       </div>
 
+      {/* Instructions Card */}
+      <Card className="bg-gradient-to-r from-lime-50 to-green-50 border-lime-200">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <FileText className="w-5 h-5 text-lime-600" />
+            How to Add Blog Content
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3 text-sm">
+            <div className="flex items-start gap-3">
+              <div className="w-6 h-6 bg-lime-500 text-white rounded-full flex items-center justify-center flex-shrink-0 font-semibold text-xs">
+                1
+              </div>
+              <div>
+                <p className="font-semibold text-gray-900">Click "Create Post" Button</p>
+                <p className="text-gray-600">Located in the top-right corner of this page</p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-3">
+              <div className="w-6 h-6 bg-lime-500 text-white rounded-full flex items-center justify-center flex-shrink-0 font-semibold text-xs">
+                2
+              </div>
+              <div>
+                <p className="font-semibold text-gray-900">Fill in the Required Information</p>
+                <ul className="text-gray-600 list-disc list-inside ml-2 mt-1">
+                  <li><strong>Post Title:</strong> The main headline of your blog post (required)</li>
+                  <li><strong>Excerpt:</strong> A short summary that appears in listings (optional)</li>
+                  <li><strong>Content:</strong> The full text of your blog post (required)</li>
+                  <li><strong>Featured Image:</strong> Upload an image (optional, max 5MB)</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <div className="w-6 h-6 bg-lime-500 text-white rounded-full flex items-center justify-center flex-shrink-0 font-semibold text-xs">
+                3
+              </div>
+              <div>
+                <p className="font-semibold text-gray-900">Manage Your Posts</p>
+                <ul className="text-gray-600 list-disc list-inside ml-2 mt-1">
+                  <li><strong>Preview:</strong> Click the eye icon to see how it looks</li>
+                  <li><strong>Edit:</strong> Use the menu (⋮) to edit, publish, or delete posts</li>
+                  <li><strong>Publish:</strong> Change status from "draft" to "published" to make it live</li>
+                  <li><strong>Feature:</strong> Mark one post as featured to highlight it on the homepage</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="bg-white/60 p-3 rounded-lg border border-lime-200 mt-4">
+              <p className="text-xs text-gray-700">
+                <strong>💡 Tip:</strong> New posts are created as "Draft" by default. Remember to change the status to "Published" when you're ready to make them visible on your website.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Compact Metrics */}
       <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
         <div className="flex items-center gap-6 sm:gap-8 flex-wrap">

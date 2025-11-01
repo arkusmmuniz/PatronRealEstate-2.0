@@ -192,7 +192,7 @@ export default function SellingPage() {
               </p>
 
               <p>
-                The following pages will provide you some of the basic steps you are expected to encounter when starting 
+                The following steps or questions will provide you some of the basic information you are expected to encounter when starting 
                 the home selling process. As mentioned, every situation is different. If you need additional or specific 
                 information on this topic, please{" "}
                 <Link href="/contact" className="text-lime-600 hover:text-lime-700 underline font-medium">
@@ -254,7 +254,7 @@ export default function SellingPage() {
                     options to explore to improve your home and optimize the value? By taking the time to understand 
                     and prepare yourself very early in the process, you will be able to make confident and favorable 
                     decisions. This also can help target the right buyers and reduce the back and forth that can happen 
-                    between buyer and seller which happens during the offer>negotiation>acceptance stage of 
+                    between buyer and seller which happens during the offer{'>'}negotiation{'>'}acceptance stage of 
                     the selling process.
                   </p>
                 </div>

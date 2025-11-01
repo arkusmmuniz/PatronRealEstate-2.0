@@ -10,6 +10,7 @@ import {
   Twitter,
   Instagram,
   Linkedin,
+  MessageSquare,
 } from "lucide-react";
 import Link from "next/link";
 import { PatronLogo } from "./patron-logo";
@@ -71,12 +72,12 @@ export function Footer() {
                 </a>
               </div>
               <div className="flex items-center space-x-3 text-gray-300">
-                <Phone className="w-4 h-4 text-lime-500" />
+                <MessageSquare className="w-4 h-4 text-lime-500" />
                 <a
-                  href="tel:8183534349"
+                  href="sms:3233503137"
                   className="hover:text-lime-400 transition-colors duration-200"
                 >
-                  (818) 353-4349
+                  Text (323) 350-3137
                 </a>
               </div>
               <div className="flex items-center space-x-3 text-gray-300">

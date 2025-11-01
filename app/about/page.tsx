@@ -165,7 +165,7 @@ export default function AboutPage() {
             </p>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
               <div className="text-center p-6 bg-gradient-to-br from-lime-50 to-lime-100 rounded-lg border-2 border-lime-200">
                 <div className="w-14 h-14 bg-lime-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Home className="w-7 h-7 text-white" />
@@ -208,14 +208,14 @@ export default function AboutPage() {
                   owners.
                 </p>
               </div>
-            </div>
-
-            <div className="mt-8 text-center">
-              <div className="inline-flex items-center gap-2 bg-lime-50 text-lime-800 px-4 py-2 rounded-lg border-2 border-lime-200">
-                <Wrench className="w-5 h-5" />
-                <span className="font-medium">
-                  Property Management (coming soon)
-                </span>
+              <div className="text-center p-6 bg-gradient-to-br from-lime-50 to-lime-100 rounded-lg border-2 border-lime-200">
+                <div className="w-14 h-14 bg-lime-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Wrench className="w-7 h-7 text-white" />
+                </div>
+                <h4 className="font-semibold text-gray-900 mb-2">Property Management</h4>
+                <p className="text-sm text-gray-600">
+                  Professional rental management for landlords and property owners.
+                </p>
               </div>
             </div>
           </CardContent>
@@ -226,11 +226,11 @@ export default function AboutPage() {
           <CardHeader className="text-center">
             <CardTitle className="flex items-center justify-center gap-3 text-2xl md:text-3xl">
               <Wrench className="w-6 h-6 md:w-8 md:h-8 text-lime-600" />
-              Additional Resources
+              Professional Referrals
             </CardTitle>
             <p className="text-gray-600 max-w-3xl mx-auto">
-              We have numerous resources available to you when it comes to
-              anything related to your home.
+              We can connect you with trusted professional service providers in our network. 
+              These are referrals to independent contractors and specialists, not services we provide directly.
             </p>
           </CardHeader>
           <CardContent>

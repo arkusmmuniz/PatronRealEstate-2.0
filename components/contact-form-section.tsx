@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
-import { Send, Phone, Mail, MapPin } from "lucide-react";
+import { Send, Phone, Mail, MapPin, MessageSquare } from "lucide-react";
 
 export function ContactFormSection() {
   const [formData, setFormData] = useState({
@@ -72,18 +72,22 @@ export function ContactFormSection() {
                     <Phone className="w-5 h-5 text-lime-600" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">Phone</p>
-                    <p className="text-gray-600">(323) 350-3137</p>
+                    <p className="font-medium text-gray-900">Call</p>
+                    <a href="tel:3233503137" className="text-gray-600 hover:text-lime-600 transition-colors">
+                      (323) 350-3137
+                    </a>
                   </div>
                 </div>
 
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-lime-50 rounded-lg flex items-center justify-center border border-lime-200">
-                    <Phone className="w-5 h-5 text-lime-600" />
+                    <MessageSquare className="w-5 h-5 text-lime-600" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">Phone</p>
-                    <p className="text-gray-600">(818) 353-4349</p>
+                    <p className="font-medium text-gray-900">Text</p>
+                    <a href="sms:3233503137" className="text-gray-600 hover:text-lime-600 transition-colors">
+                      (323) 350-3137
+                    </a>
                   </div>
                 </div>
 
@@ -93,9 +97,9 @@ export function ContactFormSection() {
                   </div>
                   <div>
                     <p className="font-medium text-gray-900">Email</p>
-                    <p className="text-gray-600">
+                    <a href="mailto:patronrealestateservices@gmail.com" className="text-gray-600 hover:text-lime-600 transition-colors">
                       patronrealestateservices@gmail.com
-                    </p>
+                    </a>
                   </div>
                 </div>
 

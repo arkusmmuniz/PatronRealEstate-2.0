@@ -28,6 +28,7 @@ import {
   Calendar,
   DollarSign,
   ExternalLink,
+  MessageSquare,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -321,7 +322,7 @@ export default function ContactPage() {
                   <div className="text-center">
                     <div className="relative w-32 h-40 mx-auto mb-4 rounded-lg overflow-hidden">
                       <Image
-                        src="https://patronrealestateservices.com/wp-content/uploads/2022/04/Fabiola-Patron-photo-updated-768x1024.jpg"
+                        src="/fabiola-patron-updated.jpg"
                         alt="Fabiola Patron"
                         fill
                         className="object-cover"
@@ -353,9 +354,9 @@ export default function ContactPage() {
                       className="w-full border-2 border-lime-500 text-lime-600 hover:bg-lime-500 hover:text-white"
                       asChild
                     >
-                      <a href="tel:8183534349">
-                        <Phone className="w-4 h-4 mr-2" />
-                        Call (818) 353-4349
+                      <a href="sms:3233503137">
+                        <MessageSquare className="w-4 h-4 mr-2" />
+                        Text (323) 350-3137
                       </a>
                     </Button>
 

@@ -37,241 +37,7 @@ export default function BuyingPage() {
           </h1>
         </div>
 
-        {/* Unified Search and Results Section */}
-        <div className="max-w-6xl mx-auto mb-16">
-          <Card className="bg-white shadow-xl border border-gray-200">
-            <CardHeader className="text-center">
-              <CardTitle className="flex items-center justify-center gap-2 text-2xl">
-                <Search className="w-8 h-8 text-lime-600" />
-                Search Properties
-              </CardTitle>
-              <p className="text-gray-600">
-                Connected to MLS - Find your perfect home with our advanced
-                search tools
-              </p>
-            </CardHeader>
-            <CardContent className="p-6">
-              <div className="space-y-6">
-                {/* MLS Integration Section */}
-                <div className="p-6 rounded-lg border-2 border-lime-200 bg-white shadow-sm">
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-5 h-5 text-lime-600" />
-                      <h4 className="font-semibold text-lime-900">
-                        MLS Listings
-                      </h4>
-                    </div>
-                    <p className="text-lime-800 text-sm leading-relaxed">
-                      Access the comprehensive Multiple Listing Service (MLS)
-                      database for additional property listings across the
-                      region.
-                    </p>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {/* English MLS */}
-                      <div className="space-y-2">
-                        <h5 className="font-semibold text-lime-900 text-sm">
-                          English
-                        </h5>
-                        <div className="space-y-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="w-full border-lime-300 text-lime-700 hover:bg-lime-50 hover:border-lime-400 cursor-pointer"
-                            onClick={() =>
-                              setMlsUrl(
-                                "https://www.crmls.org/servlet/lDisplayListings?LA=EN"
-                              )
-                            }
-                          >
-                            <MapPin className="w-4 h-4 mr-2" />
-                            Search MLS Listings
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="w-full border-lime-200 text-lime-600 hover:bg-lime-50 hover:border-lime-300 text-xs cursor-pointer"
-                            onClick={() =>
-                              setMlsUrl(
-                                "https://www.crmls.org/servlet/lDisplayListings?AGENT=G84001&LA=EN"
-                              )
-                            }
-                          >
-                            Agent Listings
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="w-full border-lime-200 text-lime-600 hover:bg-lime-50 hover:border-lime-300 text-xs cursor-pointer"
-                            onClick={() =>
-                              setMlsUrl(
-                                "https://www.crmls.org/servlet/lDisplayListings?OFFICE=G8485&LA=EN"
-                              )
-                            }
-                          >
-                            Office Listings
-                          </Button>
-                        </div>
-                      </div>
-
-                      {/* Spanish MLS */}
-                      <div className="space-y-2">
-                        <h5 className="font-semibold text-lime-900 text-sm">
-                          Español
-                        </h5>
-                        <div className="space-y-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="w-full border-lime-300 text-lime-700 hover:bg-lime-50 hover:border-lime-400 cursor-pointer"
-                            onClick={() =>
-                              setMlsUrl(
-                                "https://www.crmls.org/servlet/lDisplayListings?LA=SP"
-                              )
-                            }
-                          >
-                            <MapPin className="w-4 h-4 mr-2" />
-                            Buscar Listados MLS
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="w-full border-lime-200 text-lime-600 hover:bg-lime-50 hover:border-lime-300 text-xs cursor-pointer"
-                            onClick={() =>
-                              setMlsUrl(
-                                "https://www.crmls.org/servlet/lDisplayListings?AGENT=G84001&LA=SP"
-                              )
-                            }
-                          >
-                            Listados del Agente
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="w-full border-lime-200 text-lime-600 hover:bg-lime-50 hover:border-lime-300 text-xs cursor-pointer"
-                            onClick={() =>
-                              setMlsUrl(
-                                "https://www.crmls.org/servlet/lDisplayListings?OFFICE=G8485&LA=SP"
-                              )
-                            }
-                          >
-                            Listados de la Oficina
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="pt-2 border-t border-lime-200">
-                      <p className="text-xs text-lime-600">
-                        💡 MLS listings are now integrated directly into this
-                        page for your convenience.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* MLS Iframe Section */}
-                {mlsUrl && (
-                  <div className="mt-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <h5 className="font-semibold text-gray-900">
-                        MLS Search Results
-                      </h5>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setMlsUrl("")}
-                        className="text-gray-600"
-                      >
-                        Close MLS
-                      </Button>
-                    </div>
-                    <div
-                      className="border border-gray-200 rounded-lg overflow-hidden"
-                      style={{
-                        height: "100vh",
-                        maxHeight: "800px",
-                        position: "relative",
-                      }}
-                    >
-                      <iframe
-                        src={mlsUrl}
-                        className="w-full h-full"
-                        title="MLS Search"
-                        sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
-                        style={{
-                          border: "none",
-                          width: "100%",
-                          height: "100%",
-                          overflow: "hidden",
-                          position: "absolute",
-                          top: "0",
-                          left: "0",
-                          right: "0",
-                          bottom: "0",
-                        }}
-                        onLoad={(e) => {
-                          // Intentar inyectar CSS para eliminar scrolls
-                          try {
-                            const iframe = e.target as HTMLIFrameElement;
-                            const iframeDoc =
-                              iframe.contentDocument ||
-                              iframe.contentWindow?.document;
-                            if (iframeDoc) {
-                              const style = iframeDoc.createElement("style");
-                              style.textContent = `
-                                * {
-                                  overflow: hidden !important;
-                                  scrollbar-width: none !important;
-                                  -ms-overflow-style: none !important;
-                                }
-                                ::-webkit-scrollbar {
-                                  display: none !important;
-                                }
-                                body {
-                                  overflow: hidden !important;
-                                  margin: 0 !important;
-                                  padding: 0 !important;
-                                  height: 100% !important;
-                                  max-height: 100% !important;
-                                }
-                                html {
-                                  overflow: hidden !important;
-                                  height: 100% !important;
-                                  max-height: 100% !important;
-                                }
-                                .container, .wrapper, .content, main, div, form, table {
-                                  overflow: hidden !important;
-                                  max-height: 100% !important;
-                                }
-                                input, select, textarea {
-                                  max-width: 100% !important;
-                                }
-                                table {
-                                  width: 100% !important;
-                                  max-width: 100% !important;
-                                }
-                                .form-group, .row, .col {
-                                  overflow: hidden !important;
-                                  max-height: 100% !important;
-                                }
-                              `;
-                              iframeDoc.head.appendChild(style);
-                            }
-                          } catch (error) {
-                            console.log("No se pudo inyectar CSS en el iframe");
-                          }
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Intro Statement */}
+        {/* Intro Statement - Moved to Top */}
         <div className="max-w-4xl mx-auto mb-16">
           <Card className="bg-white shadow-lg border border-gray-200">
             <CardContent className="p-8">
@@ -534,6 +300,240 @@ export default function BuyingPage() {
                     Contact Us Today
                   </Link>
                 </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Property Search Section - Moved Below Process */}
+        <div className="max-w-6xl mx-auto mb-16">
+          <Card className="bg-white shadow-xl border border-gray-200">
+            <CardHeader className="text-center">
+              <CardTitle className="flex items-center justify-center gap-2 text-2xl">
+                <Search className="w-8 h-8 text-lime-600" />
+                Search Properties
+              </CardTitle>
+              <p className="text-gray-600">
+                Connected to MLS - Find your perfect home with our advanced
+                search tools
+              </p>
+            </CardHeader>
+            <CardContent className="p-6">
+              <div className="space-y-6">
+                {/* MLS Integration Section */}
+                <div className="p-6 rounded-lg border-2 border-lime-200 bg-white shadow-sm">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-5 h-5 text-lime-600" />
+                      <h4 className="font-semibold text-lime-900">
+                        MLS Listings
+                      </h4>
+                    </div>
+                    <p className="text-lime-800 text-sm leading-relaxed">
+                      Access the comprehensive Multiple Listing Service (MLS)
+                      database for additional property listings across the
+                      region.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* English MLS */}
+                      <div className="space-y-2">
+                        <h5 className="font-semibold text-lime-900 text-sm">
+                          English
+                        </h5>
+                        <div className="space-y-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full border-lime-300 text-lime-700 hover:bg-lime-50 hover:border-lime-400 cursor-pointer"
+                            onClick={() =>
+                              setMlsUrl(
+                                "https://www.crmls.org/servlet/lDisplayListings?LA=EN"
+                              )
+                            }
+                          >
+                            <MapPin className="w-4 h-4 mr-2" />
+                            Search MLS Listings
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full border-lime-200 text-lime-600 hover:bg-lime-50 hover:border-lime-300 text-xs cursor-pointer"
+                            onClick={() =>
+                              setMlsUrl(
+                                "https://www.crmls.org/servlet/lDisplayListings?AGENT=G84001&LA=EN"
+                              )
+                            }
+                          >
+                            Agent Listings
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full border-lime-200 text-lime-600 hover:bg-lime-50 hover:border-lime-300 text-xs cursor-pointer"
+                            onClick={() =>
+                              setMlsUrl(
+                                "https://www.crmls.org/servlet/lDisplayListings?OFFICE=G8485&LA=EN"
+                              )
+                            }
+                          >
+                            Office Listings
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Spanish MLS */}
+                      <div className="space-y-2">
+                        <h5 className="font-semibold text-lime-900 text-sm">
+                          Español
+                        </h5>
+                        <div className="space-y-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full border-lime-300 text-lime-700 hover:bg-lime-50 hover:border-lime-400 cursor-pointer"
+                            onClick={() =>
+                              setMlsUrl(
+                                "https://www.crmls.org/servlet/lDisplayListings?LA=SP"
+                              )
+                            }
+                          >
+                            <MapPin className="w-4 h-4 mr-2" />
+                            Buscar Listados MLS
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full border-lime-200 text-lime-600 hover:bg-lime-50 hover:border-lime-300 text-xs cursor-pointer"
+                            onClick={() =>
+                              setMlsUrl(
+                                "https://www.crmls.org/servlet/lDisplayListings?AGENT=G84001&LA=SP"
+                              )
+                            }
+                          >
+                            Listados del Agente
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full border-lime-200 text-lime-600 hover:bg-lime-50 hover:border-lime-300 text-xs cursor-pointer"
+                            onClick={() =>
+                              setMlsUrl(
+                                "https://www.crmls.org/servlet/lDisplayListings?OFFICE=G8485&LA=SP"
+                              )
+                            }
+                          >
+                            Listados de la Oficina
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="pt-2 border-t border-lime-200">
+                      <p className="text-xs text-lime-600">
+                        💡 MLS listings are now integrated directly into this
+                        page for your convenience.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* MLS Iframe Section */}
+                {mlsUrl && (
+                  <div className="mt-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h5 className="font-semibold text-gray-900">
+                        MLS Search Results
+                      </h5>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setMlsUrl("")}
+                        className="text-gray-600"
+                      >
+                        Close MLS
+                      </Button>
+                    </div>
+                    <div
+                      className="border border-gray-200 rounded-lg overflow-hidden"
+                      style={{
+                        height: "100vh",
+                        maxHeight: "800px",
+                        position: "relative",
+                      }}
+                    >
+                      <iframe
+                        src={mlsUrl}
+                        className="w-full h-full"
+                        title="MLS Search"
+                        sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
+                        style={{
+                          border: "none",
+                          width: "100%",
+                          height: "100%",
+                          overflow: "hidden",
+                          position: "absolute",
+                          top: "0",
+                          left: "0",
+                          right: "0",
+                          bottom: "0",
+                        }}
+                        onLoad={(e) => {
+                          // Intentar inyectar CSS para eliminar scrolls
+                          try {
+                            const iframe = e.target as HTMLIFrameElement;
+                            const iframeDoc =
+                              iframe.contentDocument ||
+                              iframe.contentWindow?.document;
+                            if (iframeDoc) {
+                              const style = iframeDoc.createElement("style");
+                              style.textContent = `
+                                * {
+                                  overflow: hidden !important;
+                                  scrollbar-width: none !important;
+                                  -ms-overflow-style: none !important;
+                                }
+                                ::-webkit-scrollbar {
+                                  display: none !important;
+                                }
+                                body {
+                                  overflow: hidden !important;
+                                  margin: 0 !important;
+                                  padding: 0 !important;
+                                  height: 100% !important;
+                                  max-height: 100% !important;
+                                }
+                                html {
+                                  overflow: hidden !important;
+                                  height: 100% !important;
+                                  max-height: 100% !important;
+                                }
+                                .container, .wrapper, .content, main, div, form, table {
+                                  overflow: hidden !important;
+                                  max-height: 100% !important;
+                                }
+                                input, select, textarea {
+                                  max-width: 100% !important;
+                                }
+                                table {
+                                  width: 100% !important;
+                                  max-width: 100% !important;
+                                }
+                                .form-group, .row, .col {
+                                  overflow: hidden !important;
+                                  max-height: 100% !important;
+                                }
+                              `;
+                              iframeDoc.head.appendChild(style);
+                            }
+                          } catch (error) {
+                            console.log("No se pudo inyectar CSS en el iframe");
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

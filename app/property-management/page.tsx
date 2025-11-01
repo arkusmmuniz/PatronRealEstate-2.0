@@ -189,12 +189,6 @@ export default function PropertyManagementPage() {
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-lime-600" />
                     <span className="text-sm text-gray-700">
-                      20+ years of industry experience
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-lime-600" />
-                    <span className="text-sm text-gray-700">
                       Local market expertise
                     </span>
                   </div>
