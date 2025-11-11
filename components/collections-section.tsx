@@ -6,6 +6,10 @@ import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 import { IDXBrokerWidget } from "@/components/idxbroker-widget";
 
+interface IProps {
+  onClicked: () => void;
+}
+
 // Datos de propiedades simuladas para cada colección
 const generateProperties = (collectionId: string, count: number) => {
   const baseImages = [
@@ -198,7 +202,7 @@ function CollectionCarousel({ collection }: { collection: typeof collections[0] 
   );
 }
 
-export function CollectionsSection() {
+const CollectionsSection: React.FC<IProps> = ({ onClicked }) => {
   const router = useRouter();
   
   return (
@@ -240,11 +244,16 @@ export function CollectionsSection() {
             </div>
 
             {/* Widget IDX */}
-            <IDXBrokerWidget 
-              widgetId="121096" 
-              title=""
-              className="shadow-none border-none"
-            />
+            <div className="flex overflow-x-hidden">
+              <IDXBrokerWidget
+                widgetId="121096"
+                title=""
+                className="shadow-none border-none w-[85%]"
+              />
+              <div className="flex flex-col items-center justify-center">
+                <button onClick={() => onClicked()} type="button" className="bg-lime-500 hover:bg-lime-600 text-white font-semibold px-6 py-2 transition-all duration-200 shadow-sm hover:shadow-md">Contact Fabiola for a private showing</button>
+              </div>
+            </div>
           </div>
 
           {/* Renderizar carrusel normal para otras colecciones - TEMPORALMENTE OCULTO */}
@@ -256,3 +265,5 @@ export function CollectionsSection() {
     </section>
   );
 }
+
+export default CollectionsSection;
