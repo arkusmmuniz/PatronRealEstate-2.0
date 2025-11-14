@@ -104,7 +104,7 @@ export default function FabFridayPage() {
                       <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200">
                         <div className="aspect-video bg-gray-900 relative">
                           <iframe
-                            src={featuredVideo.video_url.replace('watch?v=', 'embed/') + '?rel=0&modestbranding=1&showinfo=0'}
+                            src={featuredVideo.video_url.replace('watch?v=', 'embed/').replace('shorts/', 'embed/') + '?rel=0&modestbranding=1&showinfo=0'}
                             title={featuredVideo.title}
                             className="w-full h-full"
                             allowFullScreen
