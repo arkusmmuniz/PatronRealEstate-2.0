@@ -211,10 +211,10 @@ const CollectionsSection: React.FC<IProps> = ({ onClicked }) => {
         {/* Header principal */}
         <div className="text-center mb-8">
           <h2 className="text-xl md:text-2xl font-grotesk font-bold text-gray-900 mb-2">
-            Featured <span className="bg-gradient-to-r from-lime-400 to-lime-600 bg-clip-text text-transparent">Collections</span>
+            Featured <span className="bg-gradient-to-r from-lime-400 to-lime-600 bg-clip-text text-transparent">Collection</span>
           </h2>
           <p className="text-sm text-gray-600 max-w-2xl mx-auto">
-            Discover curated property collections tailored to your lifestyle and investment goals.
+            Discover curated properties tailored to your lifestyle and investment goals.
           </p>
         </div>
 
@@ -225,10 +225,10 @@ const CollectionsSection: React.FC<IProps> = ({ onClicked }) => {
             {/* Header de la colección */}
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="text-lg md:text-xl font-grotesk font-bold text-gray-900 mb-1">
+                <h3 className="text-2xl md:text-2xl font-grotesk font-bold text-gray-900 mb-1">
                   New This Week
                 </h3>
-                <p className="text-gray-600 text-xs">
+                <p className="text-gray-600 text-md">
                   Fresh listings hitting the market this <span className="bg-gradient-to-r from-lime-400 to-lime-600 bg-clip-text text-transparent font-semibold">week</span>.
                 </p>
               </div>

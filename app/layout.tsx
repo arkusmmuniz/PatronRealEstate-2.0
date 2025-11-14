@@ -21,7 +21,7 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   title: "Patron Real Estate Services - Your Trusted Real Estate Partner",
   description:
-    "Professional real estate services for buying, selling, and property management. Expert agents helping you find your dream home in Miami.",
+    "Professional real estate services for buying, selling, and property management. Expert agents helping you find your dream home in Los Ángeles.",
   generator: "v0.app",
   icons: {
     icon: '/croped patron icon.png',
