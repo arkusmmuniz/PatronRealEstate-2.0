@@ -245,19 +245,19 @@ const CollectionsSection: React.FC<IProps> = ({ onClicked }) => {
 
             {/* Widget IDX */}
             <div className="flex flex-col md:flex-row items-center overflow-x-hidden justify-center">
-              <div className="w-full md:w-1/2">
+              <div className="w-full lg:w-1/3 md:w-1/2">
                 <IDXBrokerWidget
                   widgetId="121096"
                   title=""
                   className="shadow-none border-none"
                 />
               </div>
-              <div className="flex flex-col items-center justify-center w-full md:w-1/4 mt-3">
+              <div className="flex flex-col items-center justify-center w-full md:w-1/3 mt-3">
                 <button onClick={() => onClicked()} type="button" className="w-[70%] bg-lime-500 hover:bg-lime-600 text-white font-semibold px-6 py-2 transition-all duration-200 shadow-sm hover:shadow-md">Schedule a showing</button>
                 <img
                   src="/fabiola-patron-updated.jpg"
                   alt="Fabiola Patron"
-                  className="w-[70%] h-[60%] object-cover mt-3"
+                  className="w-[50%] h-[50%] object-cover mt-3"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.src = "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
