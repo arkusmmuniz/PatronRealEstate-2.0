@@ -97,22 +97,22 @@ function CollectionCarousel({ collection }: { collection: typeof collections[0] 
 
   return (
     <div className="mb-6">
-        {/* Header de la colección */}
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h3 className="text-lg md:text-xl font-grotesk font-bold text-gray-900 mb-1">
-              {collection.title}
-            </h3>
-             <p className="text-gray-600 text-xs">
-               {collection.id === "new-this-week" && (
-                 <>Fresh listings hitting the market this <span className="bg-gradient-to-r from-lime-400 to-lime-600 bg-clip-text text-transparent font-semibold">week</span>.</>
-               )}
-               {collection.id === "reduced-prices" && (
-                 <>Smart deals and new chances to <span className="bg-gradient-to-r from-lime-400 to-lime-600 bg-clip-text text-transparent font-semibold">save big</span>.</>
-               )}
-             </p>
-          </div>
-        
+      {/* Header de la colección */}
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h3 className="text-lg md:text-xl font-grotesk font-bold text-gray-900 mb-1">
+            {collection.title}
+          </h3>
+          <p className="text-gray-600 text-xs">
+            {collection.id === "new-this-week" && (
+              <>Fresh listings hitting the market this <span className="bg-gradient-to-r from-lime-400 to-lime-600 bg-clip-text text-transparent font-semibold">week</span>.</>
+            )}
+            {collection.id === "reduced-prices" && (
+              <>Smart deals and new chances to <span className="bg-gradient-to-r from-lime-400 to-lime-600 bg-clip-text text-transparent font-semibold">save big</span>.</>
+            )}
+          </p>
+        </div>
+
         {/* Botón View All */}
         <Button
           onClick={() => router.push(collection.href)}
@@ -134,7 +134,7 @@ function CollectionCarousel({ collection }: { collection: typeof collections[0] 
             <ChevronLeft className="w-5 h-5 text-gray-600" />
           </button>
         )}
-        
+
         {canScrollRight && (
           <button
             onClick={() => scroll('right')}
@@ -158,15 +158,15 @@ function CollectionCarousel({ collection }: { collection: typeof collections[0] 
             >
               {/* Imagen de la propiedad */}
               <div className="relative h-32 overflow-hidden">
-                 <img
-                   src={property.image}
-                   alt={property.location}
-                   className="w-full h-full object-cover"
-                   onError={(e) => {
-                     const target = e.target as HTMLImageElement;
-                     target.src = "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
-                   }}
-                 />
+                <img
+                  src={property.image}
+                  alt={property.location}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
+                  }}
+                />
                 <div className="absolute top-1.5 right-1.5 bg-white/90 backdrop-blur-sm rounded-full px-1.5 py-0.5">
                   <span className="text-xs font-semibold text-gray-900">{property.price}</span>
                 </div>
@@ -204,7 +204,7 @@ function CollectionCarousel({ collection }: { collection: typeof collections[0] 
 
 const CollectionsSection: React.FC<IProps> = ({ onClicked }) => {
   const router = useRouter();
-  
+
   return (
     <section className="py-8 bg-white">
       <div className="container mx-auto px-4">
@@ -232,7 +232,7 @@ const CollectionsSection: React.FC<IProps> = ({ onClicked }) => {
                   Fresh listings hitting the market this <span className="bg-gradient-to-r from-lime-400 to-lime-600 bg-clip-text text-transparent font-semibold">week</span>.
                 </p>
               </div>
-              
+
               {/* Botón View All - TEMPORALMENTE OCULTO */}
               {/* <Button
                 onClick={() => router.push("/collections?filter=new")}
@@ -244,14 +244,27 @@ const CollectionsSection: React.FC<IProps> = ({ onClicked }) => {
             </div>
 
             {/* Widget IDX */}
-            <div className="flex overflow-x-hidden">
-              <IDXBrokerWidget
-                widgetId="121096"
-                title=""
-                className="shadow-none border-none w-[85%]"
-              />
-              <div className="flex flex-col items-center justify-center">
-                <button onClick={() => onClicked()} type="button" className="bg-lime-500 hover:bg-lime-600 text-white font-semibold px-6 py-2 transition-all duration-200 shadow-sm hover:shadow-md">Contact Fabiola for a private showing</button>
+            <div className="flex flex-col md:flex-row items-center overflow-x-hidden justify-center">
+              <div className="w-full md:w-1/2">
+                <IDXBrokerWidget
+                  widgetId="121096"
+                  title=""
+                  className="shadow-none border-none"
+                />
+              </div>
+              <div className="flex flex-col items-center justify-center w-full md:w-1/4 mt-3">
+                <button onClick={() => onClicked()} type="button" className="w-[70%] bg-lime-500 hover:bg-lime-600 text-white font-semibold px-6 py-2 transition-all duration-200 shadow-sm hover:shadow-md">Schedule a showing</button>
+                <img
+                  src="/fabiola-patron-updated.jpg"
+                  alt="Fabiola Patron"
+                  className="w-[70%] h-[60%] object-cover mt-3"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
+                  }}
+                />
+                <h1 className="font-medium mt-3">Broker</h1>
+                <p className="font-medium mt-3">Phone Number: (323) 350-3137</p>
               </div>
             </div>
           </div>

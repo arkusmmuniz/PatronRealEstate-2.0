@@ -38,12 +38,12 @@ export function SimpleHeroSection() {
         <div className="max-w-4xl mx-auto">
           {/* Título principal premium */}
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-grotesk font-bold mb-4 leading-tight text-white">
-            Your Next Move, Perfectly <span className="bg-gradient-to-r from-lime-400 to-lime-600 bg-clip-text text-transparent">Matched</span>.
+            Your next move, done <span className="bg-gradient-to-r from-lime-400 to-lime-600 bg-clip-text text-transparent">Right For You</span>.
           </h1>
 
           {/* Subtítulo premium */}
           <p className="text-base md:text-lg mb-6 text-white/90 font-medium max-w-2xl mx-auto leading-relaxed">
-            Discover, sell, or manage properties with a team built for results — anywhere in California and beyond.
+            Buying, selling, or investing — every move is guided by your goals, your timeline, and what’s best for you.
           </p>
 
 

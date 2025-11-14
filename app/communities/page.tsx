@@ -93,7 +93,7 @@ const localCommunities: LocalCommunity[] = [
   },
   {
     id: "nela",
-    name: "Northeast LA",
+    name: "Los Angeles",
     emoji: "🏙",
     population: "244,000",
     description: "Rich urban tapestry of multiple neighborhoods with cultural vibrancy and communal creativity.",

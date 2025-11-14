@@ -150,7 +150,7 @@ export default function FabFridayPage() {
                       title={video.title}
                       description={video.description || ""}
                       thumbnailUrl={getVideoThumbnail(video.video_url)}
-                      embedUrl={video.video_url.replace('watch?v=', 'embed/') + '?rel=0&modestbranding=1&showinfo=0'}
+                      embedUrl={video.video_url.replace('watch?v=', 'embed/').replace('shorts/', 'embed/') + '?rel=0&modestbranding=1&showinfo=0'}
                       date={video.created_at}
                       edition={`Episode ${video.id}`}
                       featured={video.featured}

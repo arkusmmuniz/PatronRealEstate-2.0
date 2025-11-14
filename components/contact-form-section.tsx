@@ -108,7 +108,7 @@ export function ContactFormSection() {
                     <MapPin className="w-5 h-5 text-lime-600" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">Office</p>
+                    <p className="font-medium text-gray-900">Mailing Address</p>
                     <p className="text-gray-600">
                       10209 Tujunga Canyon Blvd #164, Tujunga, CA 91042
                     </p>
