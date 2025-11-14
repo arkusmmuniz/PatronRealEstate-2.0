@@ -34,7 +34,7 @@ export function SimpleHeroSection() {
       </div>
 
       {/* Contenido principal corporativo */}
-      <div className="relative z-10 container mx-auto px-4 text-center">
+      <div className="relative z-10 container mx-auto px-4 text-center p-4">
         <div className="max-w-4xl mx-auto">
           {/* Título principal premium */}
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-grotesk font-bold mb-4 leading-tight text-white">

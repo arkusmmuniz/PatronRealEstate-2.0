@@ -245,7 +245,7 @@ const CollectionsSection: React.FC<IProps> = ({ onClicked }) => {
 
             {/* Widget IDX */}
             <div className="flex flex-col md:flex-row items-center overflow-x-hidden justify-center">
-              <div className="w-full lg:w-1/3 md:w-1/2">
+              <div className="w-full">
                 <IDXBrokerWidget
                   widgetId="121096"
                   title=""
@@ -257,7 +257,7 @@ const CollectionsSection: React.FC<IProps> = ({ onClicked }) => {
                 <img
                   src="/fabiola-patron-updated.jpg"
                   alt="Fabiola Patron"
-                  className="w-[50%] h-[50%] object-cover mt-3"
+                  className="w-[70%] h-[50%] object-cover mt-3"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.src = "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
