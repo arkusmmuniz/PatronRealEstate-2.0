@@ -1,7 +1,11 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Star } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { testimonialService } from "@/lib/services";
+import { Testimonial } from "@/lib/supabase";
+import { Loader2, Star } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const reviews = [
   {
@@ -28,6 +32,40 @@ const reviews = [
 ];
 
 export function ReviewsSection() {
+  const { toast } = useToast();
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadTestimonials();
+  }, []);
+
+  const loadTestimonials = async () => {
+    try {
+      setLoading(true);
+      const TestimonialsData = await testimonialService.getAllTestimonialsWithRange(0, 2);
+      setTestimonials(TestimonialsData);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: `Failed to load testimonials: ${error}`,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-lime-600" />
+          <p className="text-muted-foreground">Loading testimonials...</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <section className="py-12 bg-gray-50">
       <div className="container mx-auto px-4">
@@ -42,15 +80,15 @@ export function ReviewsSection() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {reviews.map((review, index) => (
+          {testimonials.map((testimonial) => (
             <Card
-              key={index}
+              key={testimonial.id}
               className="bg-white border-0 shadow-sm hover:shadow-md transition-shadow duration-300"
             >
               <CardContent className="p-4">
                 {/* Rating */}
                 <div className="flex items-center mb-3">
-                  {[...Array(review.rating)].map((_, i) => (
+                  {[...Array(testimonial.stars_number)].map((_, i) => (
                     <Star
                       key={i}
                       className="w-4 h-4 text-yellow-400 fill-current"
@@ -59,12 +97,12 @@ export function ReviewsSection() {
                 </div>
 
                 {/* Comment */}
-                <p className="text-gray-700 mb-3 italic text-sm">"{review.comment}"</p>
+                <p className="text-gray-700 mb-3 italic text-sm">"{testimonial.testimonial_description}"</p>
 
                 {/* Client info */}
                 <div className="border-t pt-3">
-                  <p className="font-semibold text-gray-900 text-sm">{review.name}</p>
-                  <p className="text-xs text-gray-600">{review.location}</p>
+                  <p className="font-semibold text-gray-900 text-sm">{testimonial.author_name}</p>
+                  <p className="text-xs text-gray-600">{testimonial.author_location}</p>
                 </div>
               </CardContent>
             </Card>

@@ -1,4 +1,4 @@
-import { supabase, supabaseAdmin, BlogPost, FabFridayVideo, User, ActivityLog } from './supabase'
+import { supabase, supabaseAdmin, BlogPost, FabFridayVideo, User, ActivityLog, Testimonial } from './supabase'
 
 // Función para generar slug a partir del título
 function generateSlug(title: string): string {
@@ -365,7 +365,7 @@ export const activityService = {
   },
 
   // Obtener logs de actividad por tipo de entidad
-  async getActivityLogsByType(entityType: 'video' | 'post', limit = 50): Promise<ActivityLog[]> {
+  async getActivityLogsByType(entityType: 'video' | 'post' | 'testimonial', limit = 50): Promise<ActivityLog[]> {
     try {
       const { data, error } = await supabaseAdmin
         .from('activity_log')
@@ -384,4 +384,135 @@ export const activityService = {
       throw error;
     }
   }
+}
+
+export const testimonialService = {
+  // Obtener todos los testimonios (para admin)
+  async getAllTestimonials(): Promise<Testimonial[]> {
+    const { data, error } = await supabaseAdmin
+      .from('testimonials')
+      .select('*')
+      .order('created_at', { ascending: false })
+    
+    if (error) throw error
+    return data || []
+  },
+
+  async getAllTestimonialsWithRange(min: number, max: number): Promise<Testimonial[]> {
+    const { data, error } = await supabaseAdmin
+      .from('testimonials')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .range(min, max)
+    
+    if (error) throw error
+    return data || []
+  },
+
+  // Obtener testimonio por ID
+  async getTestimonialById(id: number): Promise<Testimonial | null> {
+    const { data, error } = await supabase
+      .from('testimonials')
+      .select('*')
+      .eq('id', id)
+      .single()
+    
+    if (error) throw error
+    return data
+  },
+
+  // Crear nuevo video
+  async createTestimonial(testimonial: Omit<Testimonial, 'id' | 'created_at' | 'updated_at'>): Promise<Testimonial> {
+    console.log('Creating video in service:', testimonial);
+    
+    const { data, error } = await supabaseAdmin
+      .from('testimonials')
+      .insert([testimonial])
+      .select()
+      .single()
+    
+    if (error) {
+      console.error('Supabase create video error:', error);
+      throw error;
+    }
+    
+    console.log('Video created successfully:', data);
+    
+    // Log activity
+    try {
+      await activityService.logActivity({
+        entity_type: 'testimonial',
+        entity_id: data.id.toString(),
+        action: 'create',
+        new_data: data,
+      });
+    } catch (logError) {
+      console.error('Error logging activity:', logError);
+    }
+    
+    return data;
+  },
+
+  // Actualizar testimonio
+  async updateTestimonial(id: number, updates: Partial<Testimonial>): Promise<Testimonial> {
+    // Obtener data anterior para el log
+    const { data: oldData } = await supabaseAdmin
+      .from('testimonials')
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    const { data, error } = await supabaseAdmin
+      .from('testimonials')
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select()
+      .single()
+    
+    if (error) throw error
+    
+    // Log activity
+    try {
+      await activityService.logActivity({
+        entity_type: 'testimonial',
+        entity_id: id.toString(),
+        action: 'update',
+        old_data: oldData,
+        new_data: data,
+      });
+    } catch (logError) {
+      console.error('Error logging activity:', logError);
+    }
+    
+    return data
+  },
+
+  // Eliminar testimonio
+  async deleteTestimonial(id: number): Promise<void> {
+    // Obtener data para el log antes de eliminar
+    const { data: oldData } = await supabaseAdmin
+      .from('testimonials')
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    const { error } = await supabaseAdmin
+      .from('testimonials')
+      .delete()
+      .eq('id', id)
+    
+    if (error) throw error
+    
+    // Log activity
+    try {
+      await activityService.logActivity({
+        entity_type: 'testimonial',
+        entity_id: id.toString(),
+        action: 'delete',
+        old_data: oldData,
+      });
+    } catch (logError) {
+      console.error('Error logging activity:', logError);
+    }
+  },
 }

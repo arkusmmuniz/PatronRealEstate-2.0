@@ -1,10 +1,13 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Star, User } from "lucide-react";
-import { useState } from "react";
+import { Loader2, Star, User } from "lucide-react";
+import { useEffect, useState } from "react";
+import { testimonialService } from "@/lib/services";
+import { useToast } from "@/hooks/use-toast";
+import { Testimonial } from "@/lib/supabase";
 
-const testimonials = [
+/* const testimonials = [
   {
     name: "Claudia Gutierrez",
     rating: 5,
@@ -29,7 +32,7 @@ const testimonials = [
     location: "Los Angeles",
     image: "/image10.png",
   },
-];
+]; */
 
 function AvatarWithFallback({ src, alt }: { src: string; alt: string }) {
   const [imageError, setImageError] = useState(false);
@@ -51,6 +54,41 @@ function AvatarWithFallback({ src, alt }: { src: string; alt: string }) {
 }
 
 export default function TestimonialsPage() {
+  const { toast } = useToast();
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadTestimonials();
+  }, []);
+
+  const loadTestimonials = async () => {
+    try {
+      setLoading(true);
+      const TestimonialsData = await testimonialService.getAllTestimonials();
+      setTestimonials(TestimonialsData);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: `Failed to load testimonials: ${error}`,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-lime-600" />
+          <p className="text-muted-foreground">Loading testimonials...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <main className="flex-1 pt-20">
       {/* Hero Section */}
@@ -76,7 +114,7 @@ export default function TestimonialsPage() {
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {testimonials.map((testimonial, index) => (
+            {testimonials.slice(3).map((testimonial, index) => (
               <Card
                 key={index}
                 className="bg-white border-2 border-lime-200 shadow-lg hover:shadow-xl transition-shadow duration-300 h-full flex flex-col"
@@ -84,7 +122,7 @@ export default function TestimonialsPage() {
                 <CardContent className="p-6 flex flex-col h-full">
                   {/* Rating */}
                   <div className="flex items-center mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
+                    {[...Array(testimonial.stars_number)].map((_, i) => (
                       <Star
                         key={i}
                         className="w-5 h-5 text-yellow-400 fill-current"
@@ -94,21 +132,27 @@ export default function TestimonialsPage() {
 
                   {/* Comment */}
                   <p className="text-gray-700 mb-6 italic text-base leading-relaxed flex-grow">
-                    "{testimonial.comment}"
+                    "{testimonial.testimonial_description}"
                   </p>
 
                   {/* Client info */}
                   <div className="flex items-center space-x-4 mt-auto">
-                    <AvatarWithFallback
-                      src={testimonial.image}
-                      alt={testimonial.name}
-                    />
+                    {testimonial.author_picture_url ? (
+                      <AvatarWithFallback
+                        src={testimonial.author_picture_url}
+                        alt={testimonial.author_name}
+                      />
+                    ) : (
+                      <div className="w-14 h-14 rounded-full bg-lime-100 border-2 border-lime-200 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-user w-10 h-10 text-lime-600"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                      </div>
+                    )}
                     <div>
                       <p className="font-semibold text-gray-900 text-base">
-                        {testimonial.name}
+                        {testimonial.author_name}
                       </p>
                       <p className="text-sm text-gray-600">
-                        {testimonial.location}
+                        {testimonial.author_location}
                       </p>
                     </div>
                   </div>

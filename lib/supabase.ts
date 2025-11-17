@@ -58,10 +58,20 @@ export interface User {
 
 export interface ActivityLog {
   id: number // int8
-  entity_type: 'video' | 'post' // basado en la tabla real
+  entity_type: 'video' | 'post' | 'testimonial' // basado en la tabla real
   entity_id: string // uuid
   action: 'create' | 'update' | 'delete' | 'feature' | 'unfeature' // basado en la tabla real
   old_data?: Record<string, any> // jsonb
   new_data?: Record<string, any> // jsonb
   occurred_at?: string // timestamptz (auto-generado por la BD)
+}
+
+export interface Testimonial {
+  id: number
+  stars_number: number
+  author_name: string
+  author_location: string
+  author_picture_url: string
+  testimonial_description: string
+  created_at: string
 }

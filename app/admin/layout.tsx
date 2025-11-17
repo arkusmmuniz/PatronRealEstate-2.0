@@ -38,6 +38,7 @@ const navigationItems = [
   { name: "Dashboard", href: "/admin", icon: BarChart3 },
   { name: "FabFriday", href: "/admin/fabfriday", icon: Video },
   { name: "Blog", href: "/admin/blog", icon: MessageSquare },
+  { name: "Testimonials", href: "/admin/testimonials", icon: FileText },
   {
     name: "Properties",
     href: "/admin/properties",
