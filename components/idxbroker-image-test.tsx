@@ -25,7 +25,7 @@ export function IDXBrokerImageTest({ propertyId = "12345" }: ImageTestProps) {
     try {
       console.log('🧪 Testing IDXBroker images for property:', propertyId);
       
-      const apiKey = getApiKey();
+      const apiKey:any = getApiKey();
       const api = new IDXBrokerAPI(apiKey);
       
       // Test featured listings first

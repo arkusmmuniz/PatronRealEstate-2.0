@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const apiKey = searchParams.get('apiKey') || 'fdw6HWC0av32ts0CvUBvhJ';
+  const apiKey:any = searchParams.get('apiKey') || process.env.NEXT_PUBLIC_API;
 
   console.log('🔍 Debug IDXBroker API call - Testing multiple endpoints');
   console.log('Using API key:', apiKey.substring(0, 8) + '...');

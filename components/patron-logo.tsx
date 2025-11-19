@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import logo from "../images/Logo.png"
 
 interface PatronLogoProps {
   size?: "small" | "medium" | "large" | "xl";
@@ -21,13 +22,13 @@ export function PatronLogo({
 
   const logoSrc = {
     small:
-      "https://patronrealestateservices.com/wp-content/uploads/2022/04/Patron-Real-Estate-logo-update33.png",
+      logo,
     medium:
-      "https://patronrealestateservices.com/wp-content/uploads/2022/04/Patron-Real-Estate-logo-update33.png",
+      logo,
     large:
-      "https://patronrealestateservices.com/wp-content/uploads/2022/04/Patron-Real-Estate-logo-update33.png",
+      logo,
     xl:
-      "https://patronrealestateservices.com/wp-content/uploads/2022/04/Patron-Real-Estate-logo-update33.png",
+      logo,
   };
 
   const logoWidth = {

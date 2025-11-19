@@ -91,7 +91,7 @@ export default function PropertyDetailsPage() {
     setError("");
 
     try {
-      const apiKey = getApiKey();
+      const apiKey:any = getApiKey();
       
       // Use the new specific property endpoint
       const url = new URL('/api/idxbroker/property/' + propertyId, window.location.origin);
@@ -154,7 +154,7 @@ export default function PropertyDetailsPage() {
 
   const fetchPropertyImages = async () => {
     try {
-      const apiKey = getApiKey();
+      const apiKey:any = getApiKey();
       const api = new IDXBrokerAPI(apiKey);
       
       const response = await api.getPropertyImages(propertyId);

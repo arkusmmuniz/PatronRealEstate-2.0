@@ -60,7 +60,7 @@ export function PropertyCarousel({}: PropertyCarouselProps) {
     setError("");
 
     try {
-      const apiKey = getApiKey();
+      const apiKey:any = getApiKey();
       const api = new IDXBrokerAPI(apiKey);
       const response: IDXBrokerResponse = await api.searchProperties({
         limit: 20

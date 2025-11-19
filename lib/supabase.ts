@@ -1,15 +1,9 @@
 import { createClient } from '@supabase/supabase-js'
 
 // Credenciales directas (sin variables de entorno)
-const supabaseUrl = 'https://ndvtqycczedduplqmarg.supabase.co'
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5kdnRxeWNjemVkZHVwbHFtYXJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5NjkwMjcsImV4cCI6MjA3NjU0NTAyN30.jAj4MqcoCFUeaq28ozJ2iRN3L_NXyWL4jkdF3BktdoU'
-const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5kdnRxeWNjemVkZHVwbHFtYXJnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MDk2OTAyNywiZXhwIjoyMDc2NTQ1MDI3fQ.wEYdQe5tHw0gx6WsGae0-tx-vwUycX1bXAwToHdDyds'
-
-console.log('Supabase Configuration:', {
-  url: supabaseUrl,
-  anonKey: supabaseAnonKey ? 'Present' : 'Missing',
-  serviceKey: supabaseServiceKey ? 'Present' : 'Missing'
-})
+const supabaseUrl:any = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey:any = process.env.NEXT_PUBLIC_SUPABASE_ANON
+const supabaseServiceKey:any = process.env.NEXT_PUBLIC_SUPABASE_SERVICE
 
 // Crear clientes
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
