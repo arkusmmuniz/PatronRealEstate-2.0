@@ -102,7 +102,6 @@ export function ReviewsSection() {
                 {/* Client info */}
                 <div className="border-t pt-3">
                   <p className="font-semibold text-gray-900 text-sm">{testimonial.author_name}</p>
-                  <p className="text-xs text-gray-600">{testimonial.author_location}</p>
                 </div>
               </CardContent>
             </Card>

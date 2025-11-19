@@ -151,9 +151,6 @@ export default function TestimonialsPage() {
                       <p className="font-semibold text-gray-900 text-base">
                         {testimonial.author_name}
                       </p>
-                      <p className="text-sm text-gray-600">
-                        {testimonial.author_location}
-                      </p>
                     </div>
                   </div>
                 </CardContent>

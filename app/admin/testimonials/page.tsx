@@ -37,7 +37,6 @@ export default function TestimonialsAdminPage() {
         id: 0,
         stars_number: "",
         author_name: "",
-        author_location: "",
         author_picture_url: "",
         testimonial_description: "",
     });
@@ -45,7 +44,6 @@ export default function TestimonialsAdminPage() {
         id: 0,
         stars_number: "",
         author_name: "",
-        author_location: "",
         author_picture_url: "",
         testimonial_description: "",
     });
@@ -82,8 +80,7 @@ export default function TestimonialsAdminPage() {
             });
             return;
         }
-        if (!newTestimonial.stars_number || !newTestimonial.author_name
-            || !newTestimonial.author_location || !newTestimonial.testimonial_description) {
+        if (!newTestimonial.stars_number || !newTestimonial.author_name || !newTestimonial.testimonial_description) {
             toast({
                 title: "Required fields",
                 description: "Please fill all the fields with a * symbol",
@@ -95,13 +92,12 @@ export default function TestimonialsAdminPage() {
             const created = await testimonialService.createTestimonial({
                 stars_number: Number(newTestimonial.stars_number),
                 author_name: newTestimonial.author_name,
-                author_location: newTestimonial.author_location,
                 author_picture_url: newTestimonial.author_picture_url || "",
                 testimonial_description: newTestimonial.testimonial_description
             });
 
             setShowAddModal(false);
-            setNewTestimonial({ id: 0, stars_number: "", author_name: "", author_location: "", author_picture_url: "", testimonial_description: "" });
+            setNewTestimonial({ id: 0, stars_number: "", author_name: "", author_picture_url: "", testimonial_description: "" });
             await loadTestimonials()
             toast({
                 title: "Testimonial added",
@@ -121,7 +117,6 @@ export default function TestimonialsAdminPage() {
             id: testimonialData.id,
             stars_number: testimonialData.stars_number.toString(),
             author_name: testimonialData.author_name,
-            author_location: testimonialData.author_location,
             author_picture_url: testimonialData.author_picture_url,
             testimonial_description: testimonialData.testimonial_description,
         })
@@ -129,7 +124,6 @@ export default function TestimonialsAdminPage() {
             id: testimonialData.id,
             stars_number: testimonialData.stars_number.toString(),
             author_name: testimonialData.author_name,
-            author_location: testimonialData.author_location,
             author_picture_url: testimonialData.author_picture_url,
             testimonial_description: testimonialData.testimonial_description,
         })
@@ -149,13 +143,12 @@ export default function TestimonialsAdminPage() {
             const created = await testimonialService.updateTestimonial(newTestimonial.id, {
                 stars_number: Number(newTestimonial.stars_number),
                 author_name: newTestimonial.author_name,
-                author_location: newTestimonial.author_location,
                 author_picture_url: newTestimonial.author_picture_url || "",
                 testimonial_description: newTestimonial.testimonial_description
             });
 
             setShowAddModal(false);
-            setNewTestimonial({ id: 0, stars_number: "", author_name: "", author_location: "", author_picture_url: "", testimonial_description: "" });
+            setNewTestimonial({ id: 0, stars_number: "", author_name: "", author_picture_url: "", testimonial_description: "" });
             await loadTestimonials()
             toast({
                 title: "Testimonial updated",
@@ -264,18 +257,6 @@ export default function TestimonialsAdminPage() {
                                 />
                             </div>
                             <div>
-                                <Label htmlFor="author location">Testimonial Author Location *</Label>
-                                <Input
-                                    id="author location"
-                                    value={newTestimonial.author_location}
-                                    onChange={(e) =>
-                                        setNewTestimonial({ ...newTestimonial, author_location: e.target.value })
-                                    }
-                                    placeholder="e.g., Los Angeles"
-                                    className="mt-2"
-                                />
-                            </div>
-                            <div>
                                 <Label htmlFor="author picture url">Testimonial Author Picture Url (Optional)</Label>
                                 <Input
                                     id="author picture url"
@@ -360,9 +341,6 @@ export default function TestimonialsAdminPage() {
                                         <div>
                                             <h3 className="font-semibold text-gray-900 text-lg">
                                                 {testimonial.author_name}
-                                            </h3>
-                                            <h3 className="font-semibold text-gray-900 text-lg mb-1">
-                                                {testimonial.author_location}
                                             </h3>
                                             <span className="flex items-center gap-1 mb-1">
                                                 <Calendar className="w-4 h-4" />
