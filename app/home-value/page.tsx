@@ -2,25 +2,20 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Calculator,
-  Home,
-  TrendingUp,
-  MapPin,
-  DollarSign,
-  Calendar,
-  BarChart3,
-  CheckCircle,
-  Star,
-  Shield,
   Loader2,
-  Users,
-  Target,
-  Building2,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import HollyExample1 from "../../images/HollyExample1.png"
+import HollyExample2 from "../../images/HollyExample2.png"
+import HollyExample3 from "../../images/HollyExample3.png"
+import HollyExample4 from "../../images/HollyExample4.png"
+import HollyExample5 from "../../images/HollyExample5.png"
+import HollyExample6 from "../../images/HollyExample6.png"
+import HollyExample7 from "../../images/HollyExample7.png"
+import Image from "next/image";
 
 export default function HomeValuePage() {
   const [widgetLoaded, setWidgetLoaded] = useState(false);
@@ -89,7 +84,7 @@ export default function HomeValuePage() {
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-grotesk font-bold text-gray-900 mb-4">
             My Home
-            <span className="block text-green-600">Value</span>
+            <span className="block bg-gradient-to-r from-lime-400 to-lime-600 bg-clip-text text-transparent">Value</span>
           </h1>
         </div>
 
@@ -213,45 +208,45 @@ export default function HomeValuePage() {
         <div className="text-center mb-12">
           <p className="text-sm text-gray-500 mb-4">Powered by homebot</p>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-8">
-            Here is an example. See how Molly is strengthening her position in
+            Here is an example. See how Holly is strengthening her position in
             the real estate market. Some pretty cool stuff to stay up to date in
             this crazy market!
           </p>
 
           {/* Homebot Flow Images */}
           <div className="max-w-4xl mx-auto space-y-6">
-            <img
-              src="https://patronrealestateservices.com/wp-content/uploads/2022/09/home_value_1-1024x471.png"
+            <Image
+              src={HollyExample1}
               alt="Home Value Flow 1"
               className="w-full h-auto rounded-lg shadow-lg"
             />
-            <img
-              src="https://patronrealestateservices.com/wp-content/uploads/2022/09/home_value_2-1024x347.png"
+            <Image
+              src={HollyExample2}
               alt="Home Value Flow 2"
               className="w-full h-auto rounded-lg shadow-lg"
             />
-            <img
-              src="https://patronrealestateservices.com/wp-content/uploads/2022/09/home_value_3-1024x386.png"
+            <Image
+              src={HollyExample3}
               alt="Home Value Flow 3"
               className="w-full h-auto rounded-lg shadow-lg"
             />
-            <img
-              src="https://patronrealestateservices.com/wp-content/uploads/2022/09/home_value_4-1024x387.png"
+            <Image
+              src={HollyExample4}
               alt="Home Value Flow 4"
               className="w-full h-auto rounded-lg shadow-lg"
             />
-            <img
-              src="https://patronrealestateservices.com/wp-content/uploads/2022/09/home_value_5-1024x383.png"
+            <Image
+              src={HollyExample5}
               alt="Home Value Flow 5"
               className="w-full h-auto rounded-lg shadow-lg"
             />
-            <img
-              src="https://patronrealestateservices.com/wp-content/uploads/2022/09/home_value_6-1024x335.png"
+            <Image
+              src={HollyExample6}
               alt="Home Value Flow 6"
               className="w-full h-auto rounded-lg shadow-lg"
             />
-            <img
-              src="https://patronrealestateservices.com/wp-content/uploads/2022/09/home_value_7-1024x379.png"
+            <Image
+              src={HollyExample7}
               alt="Home Value Flow 7"
               className="w-full h-auto rounded-lg shadow-lg"
             />

@@ -16,6 +16,7 @@ import {
   Home,
   Wrench,
   Handshake,
+  House,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -98,10 +99,10 @@ export default function AboutPage() {
                     </div>
                     <div className="text-center">
                       <div className="text-2xl md:text-3xl font-bold text-lime-600 mb-2">
-                        13
+                        <House className="w-6 h-6 md:w-8 md:h-8 mx-auto mt-1" />
                       </div>
                       <div className="text-sm text-gray-600">
-                        Years at Century 21
+                        Community Involvement
                       </div>
                     </div>
                     <div className="text-center">

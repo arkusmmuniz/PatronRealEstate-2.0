@@ -65,6 +65,7 @@ export interface Testimonial {
   stars_number: number
   author_name: string
   author_picture_url: string
+  publication_date: any
   testimonial_description: string
   created_at: string
 }

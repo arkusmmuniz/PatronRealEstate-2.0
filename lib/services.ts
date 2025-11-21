@@ -392,7 +392,7 @@ export const testimonialService = {
     const { data, error } = await supabaseAdmin
       .from('testimonials')
       .select('*')
-      .order('created_at', { ascending: false })
+      .order('publication_date', { ascending: false })
     
     if (error) throw error
     return data || []
@@ -402,7 +402,7 @@ export const testimonialService = {
     const { data, error } = await supabaseAdmin
       .from('testimonials')
       .select('*')
-      .order('created_at', { ascending: false })
+      .order('publication_date', { ascending: false })
       .range(min, max)
     
     if (error) throw error

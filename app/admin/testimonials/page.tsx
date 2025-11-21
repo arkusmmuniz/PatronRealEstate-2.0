@@ -38,6 +38,7 @@ export default function TestimonialsAdminPage() {
         stars_number: "",
         author_name: "",
         author_picture_url: "",
+        publication_date: "",
         testimonial_description: "",
     });
     const [checkNewTestimonial, setCheckNewTestimonial] = useState({
@@ -45,6 +46,7 @@ export default function TestimonialsAdminPage() {
         stars_number: "",
         author_name: "",
         author_picture_url: "",
+        publication_date: "",
         testimonial_description: "",
     });
     const [testimonialMode, setTestimonialMode] = useState("");
@@ -80,7 +82,7 @@ export default function TestimonialsAdminPage() {
             });
             return;
         }
-        if (!newTestimonial.stars_number || !newTestimonial.author_name || !newTestimonial.testimonial_description) {
+        if (!newTestimonial.stars_number || !newTestimonial.author_name || !newTestimonial.testimonial_description || !newTestimonial.publication_date) {
             toast({
                 title: "Required fields",
                 description: "Please fill all the fields with a * symbol",
@@ -93,11 +95,12 @@ export default function TestimonialsAdminPage() {
                 stars_number: Number(newTestimonial.stars_number),
                 author_name: newTestimonial.author_name,
                 author_picture_url: newTestimonial.author_picture_url || "",
+                publication_date: new Date(newTestimonial.publication_date),
                 testimonial_description: newTestimonial.testimonial_description
             });
 
             setShowAddModal(false);
-            setNewTestimonial({ id: 0, stars_number: "", author_name: "", author_picture_url: "", testimonial_description: "" });
+            setNewTestimonial({ id: 0, stars_number: "", author_name: "", publication_date: "", author_picture_url: "", testimonial_description: "" });
             await loadTestimonials()
             toast({
                 title: "Testimonial added",
@@ -118,6 +121,7 @@ export default function TestimonialsAdminPage() {
             stars_number: testimonialData.stars_number.toString(),
             author_name: testimonialData.author_name,
             author_picture_url: testimonialData.author_picture_url,
+            publication_date: testimonialData.publication_date,
             testimonial_description: testimonialData.testimonial_description,
         })
         setNewTestimonial({
@@ -125,6 +129,7 @@ export default function TestimonialsAdminPage() {
             stars_number: testimonialData.stars_number.toString(),
             author_name: testimonialData.author_name,
             author_picture_url: testimonialData.author_picture_url,
+            publication_date: testimonialData.publication_date,
             testimonial_description: testimonialData.testimonial_description,
         })
         setShowAddModal(true)
@@ -144,11 +149,12 @@ export default function TestimonialsAdminPage() {
                 stars_number: Number(newTestimonial.stars_number),
                 author_name: newTestimonial.author_name,
                 author_picture_url: newTestimonial.author_picture_url || "",
+                publication_date: new Date(newTestimonial.publication_date),
                 testimonial_description: newTestimonial.testimonial_description
             });
 
             setShowAddModal(false);
-            setNewTestimonial({ id: 0, stars_number: "", author_name: "", author_picture_url: "", testimonial_description: "" });
+            setNewTestimonial({ id: 0, stars_number: "", author_name: "", author_picture_url: "", publication_date: "", testimonial_description: "" });
             await loadTestimonials()
             toast({
                 title: "Testimonial updated",
@@ -269,6 +275,18 @@ export default function TestimonialsAdminPage() {
                                 />
                             </div>
                             <div>
+                                <Label htmlFor="author picture url">Publication date *</Label>
+                                <Input
+                                    type="date"
+                                    value={newTestimonial.publication_date}
+                                    onChange={(e) =>
+                                        setNewTestimonial({ ...newTestimonial, publication_date: e.target.value })
+                                    }
+                                    placeholder="2018-07-22"
+                                    className="w-fit mt-2"
+                                />
+                            </div>
+                            <div>
                                 <Label htmlFor="testimonial description">Testimonial Description *</Label>
                                 <Textarea
                                     id="testimonial description"
@@ -344,7 +362,7 @@ export default function TestimonialsAdminPage() {
                                             </h3>
                                             <span className="flex items-center gap-1 mb-1">
                                                 <Calendar className="w-4 h-4" />
-                                                {new Date(testimonial.created_at).toLocaleDateString('en-US', {
+                                                {new Date(testimonial.publication_date).toLocaleDateString('en-US', {
                                                     month: 'short',
                                                     day: 'numeric',
                                                     year: 'numeric'
@@ -407,7 +425,7 @@ export default function TestimonialsAdminPage() {
                                     variant="outline"
                                     size="sm"
                                     className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                    onClick={() => {setShowDeleteModal(true); setTestimonialID(testimonial.id)}}
+                                    onClick={() => { setShowDeleteModal(true); setTestimonialID(testimonial.id) }}
                                 >
                                     <Trash2 className="w-4 h-4 mr-1" />
                                     Delete

@@ -62,6 +62,59 @@ export default function TestimonialsPage() {
     loadTestimonials();
   }, []);
 
+  const timeAgo = (date: any) => {
+    const now:any = new Date();
+    const past:any = new Date(date);
+
+    // --- Calculate year and month differences ---
+    let years = now.getFullYear() - past.getFullYear();
+    let months = now.getMonth() - past.getMonth();
+
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    // Adjust for day of month
+    if (now.getDate() < past.getDate()) {
+      months--;
+      if (months < 0) {
+        months = 11;
+        years--;
+      }
+    }
+
+    // If at least 1 year → return years
+    if (years >= 1) {
+      return `${years} year${years > 1 ? "s" : ""} ago`;
+    }
+
+    // If less than 1 year but at least 1 month → return months
+    if (months >= 1) {
+      return `${months} month${months > 1 ? "s" : ""} ago`;
+    }
+
+    // --- Fallback to normal time-ago below 1 month ---
+    const diff = (now - past) / 1000; // seconds
+
+    const units = [
+      { name: "week", secs: 60 * 60 * 24 * 7 },
+      { name: "day", secs: 60 * 60 * 24 },
+      { name: "hour", secs: 60 * 60 },
+      { name: "minute", secs: 60 },
+      { name: "second", secs: 1 }
+    ];
+
+    for (let unit of units) {
+      const value = Math.floor(diff / unit.secs);
+      if (value >= 1) {
+        return `${value} ${unit.name}${value > 1 ? "s" : ""} ago`;
+      }
+    }
+
+    return "just now";
+  }
+
   const loadTestimonials = async () => {
     try {
       setLoading(true);
@@ -114,7 +167,7 @@ export default function TestimonialsPage() {
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {testimonials.slice(3).map((testimonial, index) => (
+            {testimonials.map((testimonial, index) => (
               <Card
                 key={index}
                 className="bg-white border-2 border-lime-200 shadow-lg hover:shadow-xl transition-shadow duration-300 h-full flex flex-col"
@@ -150,6 +203,9 @@ export default function TestimonialsPage() {
                     <div>
                       <p className="font-semibold text-gray-900 text-base">
                         {testimonial.author_name}
+                      </p>
+                      <p className="font-semibold text-gray-900 text-base">
+                        {timeAgo(testimonial.publication_date)}
                       </p>
                     </div>
                   </div>
