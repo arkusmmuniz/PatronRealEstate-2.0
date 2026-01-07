@@ -4,6 +4,9 @@ import { useState } from "react";
 import { supabaseAdmin } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 
+// Forzar renderizado dinámico para evitar errores en build
+export const dynamic = 'force-dynamic';
+
 export default function DebugBlogSchemaPage() {
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);

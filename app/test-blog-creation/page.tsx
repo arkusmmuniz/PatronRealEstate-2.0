@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
+// Forzar renderizado dinámico para evitar errores en build
+export const dynamic = 'force-dynamic';
+
 export default function TestBlogCreationPage() {
   const [title, setTitle] = useState("Test Title");
   const [content, setContent] = useState("Test content");

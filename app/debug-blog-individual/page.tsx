@@ -5,6 +5,9 @@ import { blogService } from "@/lib/services";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+// Forzar renderizado dinámico para evitar errores en build
+export const dynamic = 'force-dynamic';
+
 export default function DebugBlogIndividualPage() {
   const [postId, setPostId] = useState("1");
   const [result, setResult] = useState<any>(null);

@@ -3,6 +3,9 @@
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
 
+// Forzar renderizado dinámico para evitar errores en build
+export const dynamic = 'force-dynamic';
+
 export default function LoginDebug() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

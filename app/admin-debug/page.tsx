@@ -3,6 +3,9 @@
 import { useEffect, useState } from 'react';
 import { supabaseAdmin } from '@/lib/supabase';
 
+// Forzar renderizado dinámico para evitar errores en build
+export const dynamic = 'force-dynamic';
+
 export default function AdminDebug() {
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
