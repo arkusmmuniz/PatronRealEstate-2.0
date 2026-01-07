@@ -14,6 +14,7 @@ import { Search, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { blogService } from "@/lib/services";
 import { BlogPost } from "@/lib/supabase";
+import { formatDateUS } from "@/lib/utils/date-formatter";
 
 export default function BlogPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -150,6 +151,19 @@ export default function BlogPage() {
             <div className="container mx-auto px-4">
               <div className="max-w-4xl mx-auto">
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                  {featuredPost.image_url && featuredPost.image_url.trim() !== '' && featuredPost.image_url !== '/placeholder.jpg' && (
+                    <div className="w-full h-64 md:h-96 overflow-hidden">
+                      <img
+                        src={featuredPost.image_url}
+                        alt={featuredPost.title}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                        }}
+                      />
+                    </div>
+                  )}
                   <div className="p-8">
                     <div className="flex items-center gap-2 mb-4">
                       <span className="bg-lime-100 text-lime-800 text-xs font-semibold px-2 py-1 rounded-full">
@@ -167,7 +181,7 @@ export default function BlogPage() {
                         <span>By Patron Real Estate Services</span>
                       </span>
                       <span className="flex items-center gap-1">
-                        <span>{featuredPost.publish_date}</span>
+                        <span>{formatDateUS(featuredPost.publish_date, featuredPost.created_at)}</span>
                       </span>
                       <span className="flex items-center gap-1">
                         <span>{featuredPost.read_time}</span>
@@ -200,6 +214,7 @@ export default function BlogPage() {
                     imageUrl={post.image_url || "/placeholder.jpg"}
                     readTime={post.read_time}
                     featured={post.featured}
+                    createdAt={post.created_at}
                   />
                 ))}
               </div>
@@ -234,7 +249,7 @@ export default function BlogPage() {
                     variant="outline"
                   onClick={() => {
                     setSearchTerm("");
-                    setSelectedCategory("all");
+                    setSortBy("newest");
                   }}
                 >
                     Clear Filters

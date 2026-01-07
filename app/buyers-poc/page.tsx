@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   MapPin,
@@ -11,11 +11,12 @@ import {
   TreePine,
   Building2,
   DollarSign,
+  Search,
 } from "lucide-react";
 import Link from "next/link";
-import { StickyCtaCard } from "@/components/buying/sticky-cta-card";
+import { SearchForm } from "@/components/buyers-poc/search-form";
 
-export default function BuyingPage() {
+export default function BuyersPOCPage() {
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
       <div className="container mx-auto px-4 py-8">
@@ -27,14 +28,10 @@ export default function BuyingPage() {
           </h1>
         </div>
 
-        {/* 2-Column Layout: Content on left, Sticky CTA on right */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10 items-start">
-          {/* Left Column: Main Content */}
-          <div className="space-y-16">
-            {/* Intro Statement - Moved to Top */}
-            <div>
-              <Card className="bg-white shadow-lg border border-gray-200">
-                <CardContent className="p-8">
+        {/* Intro Statement - Moved to Top */}
+        <div className="max-w-4xl mx-auto mb-16">
+          <Card className="bg-white shadow-lg border border-gray-200">
+            <CardContent className="p-8">
               <p className="text-gray-700 leading-relaxed mb-6">
                 Watching a home buyer get those keys to their new home and light
                 up is one of our favorite parts of the job! This is an exciting
@@ -183,17 +180,17 @@ export default function BuyingPage() {
               </div>
             </CardContent>
           </Card>
-            </div>
+        </div>
 
-            {/* Process Overview */}
-            <div>
-              <Card className="bg-white shadow-lg border border-gray-200">
-                <CardContent className="p-8">
-                  <h3 className="text-2xl font-semibold text-gray-900 mb-8 text-center">
-                    Buying Process Overview
-                  </h3>
+        {/* Process Overview */}
+        <div className="max-w-4xl mx-auto mb-16">
+          <Card className="bg-white shadow-lg border border-gray-200">
+            <CardContent className="p-8">
+              <h3 className="text-2xl font-semibold text-gray-900 mb-8 text-center">
+                Buying Process Overview
+              </h3>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {/* Step 1 */}
                 <div className="text-center">
                   <div className="w-16 h-16 border-3 border-lime-400 rounded-full flex items-center justify-center mx-auto mb-4 bg-white shadow-sm">
@@ -275,91 +272,103 @@ export default function BuyingPage() {
                     keys to your new home.
                   </p>
                 </div>
-                  </div>
+              </div>
 
-                  <div className="text-center mt-8 p-6 border-2 border-lime-300 rounded-lg bg-white">
-                    <h4 className="text-lg font-bold text-lime-600 mb-2">
-                      Ready to Start?
-                    </h4>
-                    <p className="text-gray-600 mb-4">
-                      Let us guide you through every step of the home buying process
-                      with our 20+ years of experience.
-                    </p>
-                    <div className="flex flex-col gap-3 items-center">
-                      <Button
-                        className="bg-lime-600 hover:bg-lime-700 text-white"
-                        asChild
-                      >
-                        <Link href="/contact">
-                          <Users className="w-4 h-4 mr-2" />
-                          Contact Us Today
-                        </Link>
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
+              <div className="text-center mt-8 p-6 border-2 border-lime-300 rounded-lg bg-white">
+                <h4 className="text-lg font-bold text-lime-600 mb-2">
+                  Ready to Start?
+                </h4>
+                <p className="text-gray-600 mb-4">
+                  Let us guide you through every step of the home buying process
+                  with our 20+ years of experience.
+                </p>
+                <Button
+                  className="bg-lime-600 hover:bg-lime-700 text-white"
+                  asChild
+                >
+                  <Link href="/contact">
+                    <Users className="w-4 h-4 mr-2" />
+                    Contact Us Today
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
           </Card>
-            </div>
+        </div>
 
-            {/* Contact Form Section */}
-            <div>
-              <Card className="bg-white shadow-xl border-2 border-lime-300">
-                <CardContent className="p-8">
-                  <div className="text-center mb-8">
-                    <h3 className="text-2xl font-bold mb-4 text-gray-900">
-                      Ready to Start Your Home Buying Journey?
-                    </h3>
-                    <p className="text-lg text-gray-600">
-                      Contact us today to get personalized guidance and expert
-                      assistance
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="space-y-4">
-                      <h4 className="text-lg font-semibold text-gray-900">
-                        Why Choose Patron Real Estate?
-                      </h4>
-                      <ul className="space-y-2 text-sm text-gray-700">
-                        <li className="flex items-center gap-2">
-                          <ArrowRight className="w-4 h-4 text-lime-600" />
-                          20+ years of industry experience
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <ArrowRight className="w-4 h-4 text-lime-600" />
-                          Expert knowledge of local markets
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <ArrowRight className="w-4 h-4 text-lime-600" />
-                          Personalized guidance throughout the process
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <ArrowRight className="w-4 h-4 text-lime-600" />
-                          Access to exclusive MLS listings
-                        </li>
-                      </ul>
-                    </div>
-
-                    <div className="text-center flex flex-col gap-3 items-center">
-                      <Button
-                        size="lg"
-                        className="bg-lime-500 hover:bg-lime-600 text-white"
-                        asChild
-                      >
-                        <Link href="/contact">
-                          <Users className="w-5 h-5 mr-2" />
-                          Contact Our Team
-                        </Link>
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
+        {/* Property Search Section - Buyers POC Search Form */}
+        <div className="max-w-6xl mx-auto mb-16">
+          <Card className="bg-white shadow-xl border border-gray-200">
+            <CardHeader className="text-center">
+              <CardTitle className="flex items-center justify-center gap-2 text-2xl">
+                <Search className="w-8 h-8 text-lime-600" />
+                Search Properties
+              </CardTitle>
+              <p className="text-gray-600">
+                Connected to MLS - Find your perfect home with our advanced
+                search tools
+              </p>
+            </CardHeader>
+            <CardContent className="p-6">
+              <SearchForm />
+            </CardContent>
           </Card>
-            </div>
-          </div>
+        </div>
 
-          {/* Right Column: Sticky CTA Card */}
-          <StickyCtaCard />
+        {/* Contact Form Section */}
+        <div className="max-w-4xl mx-auto mt-16">
+          <Card className="bg-white shadow-xl border-2 border-lime-300">
+            <CardContent className="p-8">
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold mb-4 text-gray-900">
+                  Ready to Start Your Home Buying Journey?
+                </h3>
+                <p className="text-lg text-gray-600">
+                  Contact us today to get personalized guidance and expert
+                  assistance
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-4">
+                  <h4 className="text-lg font-semibold text-gray-900">
+                    Why Choose Patron Real Estate?
+                  </h4>
+                  <ul className="space-y-2 text-sm text-gray-700">
+                    <li className="flex items-center gap-2">
+                      <ArrowRight className="w-4 h-4 text-lime-600" />
+                      20+ years of industry experience
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <ArrowRight className="w-4 h-4 text-lime-600" />
+                      Expert knowledge of local markets
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <ArrowRight className="w-4 h-4 text-lime-600" />
+                      Personalized guidance throughout the process
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <ArrowRight className="w-4 h-4 text-lime-600" />
+                      Access to exclusive MLS listings
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="text-center">
+                  <Button
+                    size="lg"
+                    className="bg-lime-500 hover:bg-lime-600 text-white"
+                    asChild
+                  >
+                    <Link href="/contact">
+                      <Users className="w-5 h-5 mr-2" />
+                      Contact Our Team
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

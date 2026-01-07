@@ -3,6 +3,7 @@
 
 export interface IDXBrokerProperty {
   listingID: string;
+  mlsId?: string; // MLS ID (e.g., "e025") - required for IDX Broker detail URLs
   address: string;
   city: string;
   state: string;
@@ -152,23 +153,53 @@ class IDXBrokerAPI {
 
   /**
    * Get property details by ID using correct IDXBroker API endpoint
+   * Uses the direct property endpoint instead of the generic makeRequest
    */
   async getPropertyDetails(listingID: string): Promise<IDXBrokerResponse> {
     try {
-      const response = await this.makeRequest(`property/${listingID}`);
+      // Use the direct property endpoint for better control
+      const url = new URL(`/api/idxbroker/property/${encodeURIComponent(listingID)}`, window.location.origin);
+      url.searchParams.append('apiKey', this.apiKey);
       
-      if (response.success && response.data) {
+      const response = await fetch(url.toString(), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        
+        // Handle authentication errors specifically
+        if (response.status === 401) {
+          const authError = errorData.error || errorData.details || 'Authentication failed';
+          throw new Error(`Authentication Error (401): ${authError}. Please verify your IDX Broker API key is valid and has the required permissions.`);
+        }
+        
+        throw new Error(errorData.error || errorData.details || `HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.success && data.data) {
+        // Transform the data if it's real data (not already transformed)
+        const transformedData = data.isRealData 
+          ? this.transformProperties(Array.isArray(data.data) ? data.data : [data.data])
+          : (Array.isArray(data.data) ? data.data : [data.data]);
+        
         return {
           success: true,
-          data: this.transformProperties(response.data)
+          data: transformedData
         };
       } else {
         return {
           success: false,
-          error: response.error || 'Failed to fetch property details'
+          error: data.error || 'Failed to fetch property details'
         };
       }
     } catch (error) {
+      console.error('Error in getPropertyDetails:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to fetch property details'
@@ -374,9 +405,14 @@ class IDXBrokerAPI {
       
       console.log('Processed images for property:', item.listingID || item.idxID, 'imageUrl:', imageUrl, 'images count:', images.length);
       
+      // Extract mlsId - IDX Broker may provide this in various fields
+      // Common field names: mlsID, mlsId, mls, mlsNumber, mlsNumberDisplay
+      const mlsId = item.mlsID || item.mlsId || item.mls || item.mlsNumber || item.mlsNumberDisplay || '';
+      
       return {
         // IDXBroker standard fields
         listingID: item.listingID || item.idxID || item.mlsID || '',
+        mlsId: mlsId, // MLS ID for constructing IDX Broker detail URLs
         address: item.address || item.streetAddress || item.fullAddress || '',
         city: item.cityName || item.city || '',
         state: item.state || item.stateAbbr || '',

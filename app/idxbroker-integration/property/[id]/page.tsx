@@ -415,9 +415,37 @@ export default function PropertyDetailsPage() {
               </Card>
             </div>
 
-            {/* Right Column - Property Info and Contact */}
+            {/* Right Column - Agent Information */}
             <div className="space-y-6">
-              {/* Property Summary */}
+              {/* Agent Information Card - Similar to Home Page */}
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex flex-col items-center justify-center">
+                    <Button 
+                      className="w-full bg-lime-500 hover:bg-lime-600 text-white font-semibold px-6 py-2 transition-all duration-200 shadow-sm hover:shadow-md mb-4"
+                      onClick={() => {
+                        // Navigate to contact page
+                        window.location.href = `/contact`;
+                      }}
+                    >
+                      Schedule a showing
+                    </Button>
+                    <img
+                      src="/fabiola-patron-updated.jpg"
+                      alt="Fabiola Patron"
+                      className="w-full max-w-[200px] object-cover mt-3"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
+                      }}
+                    />
+                    <h1 className="font-medium mt-3">Broker</h1>
+                    <p className="font-medium mt-3">Phone Number: (323) 350-3137</p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Property Summary - Moved from top */}
               <Card>
                 <CardContent className="p-6">
                   <div className="space-y-4">
@@ -461,10 +489,6 @@ export default function PropertyDetailsPage() {
 
                     {/* Action Buttons */}
                     <div className="space-y-3">
-                      <Button className="w-full bg-lime-600 hover:bg-lime-700">
-                        <Phone className="w-4 h-4 mr-2" />
-                        Schedule Viewing
-                      </Button>
                       <Button variant="outline" className="w-full">
                         <Mail className="w-4 h-4 mr-2" />
                         Request Information
@@ -480,35 +504,6 @@ export default function PropertyDetailsPage() {
                         </Button>
                       </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Agent Contact */}
-              <Card>
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold mb-4">Contact Agent</h3>
-                  <div className="flex items-center gap-4 mb-4">
-                    <img
-                      src="/fabiola-patron.jpg"
-                      alt="Fabiola Patron"
-                      className="w-16 h-16 rounded-full object-cover"
-                    />
-                    <div>
-                      <h4 className="font-semibold">Fabiola Patron</h4>
-                      <p className="text-sm text-gray-600">Real Estate Agent</p>
-                      <p className="text-sm text-gray-600">Patron Real Estate</p>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Button variant="outline" className="w-full justify-start">
-                      <Phone className="w-4 h-4 mr-2" />
-                      Call Agent
-                    </Button>
-                    <Button variant="outline" className="w-full justify-start">
-                      <Mail className="w-4 h-4 mr-2" />
-                      Email Agent
-                    </Button>
                   </div>
                 </CardContent>
               </Card>

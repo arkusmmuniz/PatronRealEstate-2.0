@@ -1,9 +1,9 @@
 import { createClient } from '@supabase/supabase-js'
 
-// Credenciales directas (sin variables de entorno)
+// Credenciales desde variables de entorno
 const supabaseUrl:any = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey:any = process.env.NEXT_PUBLIC_SUPABASE_ANON
-const supabaseServiceKey:any = process.env.NEXT_PUBLIC_SUPABASE_SERVICE
+const supabaseAnonKey:any = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const supabaseServiceKey:any = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_KEY
 
 // Crear clientes
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
@@ -27,6 +27,7 @@ export interface BlogPost {
   read_time: string
   featured: boolean
   views: number
+  image_url?: string // Optional image URL for blog post
   created_at: string
   updated_at: string
 }

@@ -1,0 +1,41 @@
+/* IDX Search Tabs Styles */
+
+/* Prevent horizontal scroll on iframe container */
+.idx-search-iframe-container {
+  position: relative;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Iframe styling - full width, no horizontal scroll */
+.idx-search-iframe {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  border: none !important;
+  display: block !important;
+}
+
+/* Prevent horizontal scroll on body when viewing search */
+body:has(.idx-search-iframe-container) {
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+}
+
+/* Ensure tabs are responsive */
+@media (max-width: 768px) {
+  .idx-search-iframe-container {
+    min-height: 600px;
+    height: calc(100vh - 300px);
+  }
+}
+
+
+
+
+
+
+
+
+

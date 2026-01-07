@@ -9,6 +9,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { blogService } from "@/lib/services";
 import { BlogPost } from "@/lib/supabase";
+import { formatDateUS } from "@/lib/utils/date-formatter";
 
 export default function BlogPostPage() {
   const params = useParams();
@@ -113,11 +114,7 @@ export default function BlogPostPage() {
                 </Badge>
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Calendar className="w-4 h-4" />
-                  <span className="text-sm">{new Date(blogPost.publish_date).toLocaleDateString('en-US', { 
-                    month: 'long', 
-                    day: 'numeric', 
-                    year: 'numeric' 
-                  })}</span>
+                  <span className="text-sm">{formatDateUS(blogPost.publish_date, blogPost.created_at)}</span>
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Clock className="w-4 h-4" />
@@ -131,6 +128,21 @@ export default function BlogPostPage() {
                 By Patron Real Estate Services
               </p>
             </div>
+
+            {/* Featured Image */}
+            {blogPost.image_url && blogPost.image_url.trim() !== '' && blogPost.image_url !== '/placeholder.jpg' && (
+              <div className="mb-8">
+                <img
+                  src={blogPost.image_url}
+                  alt={blogPost.title}
+                  className="w-full h-auto rounded-lg object-cover shadow-lg"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                  }}
+                />
+              </div>
+            )}
 
             {/* Post Content */}
             <Card className="p-8 md:p-12 mb-8">
