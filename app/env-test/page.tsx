@@ -1,5 +1,8 @@
 "use client";
 
+// Forzar renderizado dinámico para evitar errores en build
+export const dynamic = 'force-dynamic';
+
 export default function EnvTest() {
   return (
     <div className="p-8 bg-white rounded-lg shadow-lg max-w-4xl mx-auto mt-8">

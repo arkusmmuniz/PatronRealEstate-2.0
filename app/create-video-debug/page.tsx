@@ -3,6 +3,9 @@
 import { useState } from 'react';
 import { videoService } from '@/lib/services';
 
+// Forzar renderizado dinámico para evitar errores en build
+export const dynamic = 'force-dynamic';
+
 export default function CreateVideoDebug() {
   const [title, setTitle] = useState('Test Video');
   const [description, setDescription] = useState('Test Description');
