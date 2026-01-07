@@ -1,19 +1,29 @@
 import { createClient } from '@supabase/supabase-js'
 
 // Credenciales desde variables de entorno
-const supabaseUrl:any = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey:any = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-const supabaseServiceKey:any = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_KEY
+const supabaseUrl:any = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+const supabaseAnonKey:any = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+const supabaseServiceKey:any = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_KEY || ''
 
-// Crear clientes
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Crear clientes solo si las variables están disponibles
+// Durante el build, esto puede no estar disponible, por lo que usamos valores dummy
+export const supabase = supabaseUrl && supabaseAnonKey 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : createClient('https://placeholder.supabase.co', 'placeholder-key')
 
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false
-  }
-})
+export const supabaseAdmin = supabaseUrl && supabaseServiceKey
+  ? createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    })
+  : createClient('https://placeholder.supabase.co', 'placeholder-key', {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    })
 
 // Tipos para las tablas existentes
 export interface BlogPost {
