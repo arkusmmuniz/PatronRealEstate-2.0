@@ -7,12 +7,8 @@ import {
   Building2,
   Home,
   Users,
-  DollarSign,
-  Calendar,
   MapPin,
-  Plus,
   Search,
-  Filter,
   Phone,
   Shield,
   Wrench,
@@ -20,11 +16,12 @@ import {
   CheckCircle,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+
+// IDX Broker Rental Search URLs - filtered for rentals only (Residential Lease)
+const IDX_RENTALS_URL_EN = "https://patronrealestateservices.idxbroker.com/idx/search/advanced?pt=Residential%20Lease";
+const IDX_RENTALS_URL_ES = "https://patronrealestateservices.idxbroker.com/idx/search/advanced?pt=Residential%20Lease";
 
 export default function PropertyManagementPage() {
-  const [mlsUrl, setMlsUrl] = useState("");
-
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
       <div className="container mx-auto px-4 py-8">
@@ -56,49 +53,31 @@ export default function PropertyManagementPage() {
                 listings and professional assistance.
               </p>
 
-              {/* MLS Search Integration */}
+              {/* IDX Broker Rental Search Integration */}
               <div className="mb-6">
                 <h3 className="text-lg font-semibold mb-4">
                   Search Available Rentals
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Button
-                    onClick={() =>
-                      setMlsUrl(
-                        "https://www.crmls.org/servlet/lDisplayListings?LA=EN"
-                      )
-                    }
+                    onClick={() => {
+                      window.open(IDX_RENTALS_URL_EN, "_blank", "noopener,noreferrer");
+                    }}
                     className="w-full bg-lime-600 hover:bg-lime-700"
                   >
                     <Search className="w-4 h-4 mr-2" />
                     Search in English
                   </Button>
                   <Button
-                    onClick={() =>
-                      setMlsUrl(
-                        "https://www.crmls.org/servlet/lDisplayListings?LA=SP"
-                      )
-                    }
+                    onClick={() => {
+                      window.open(IDX_RENTALS_URL_ES, "_blank", "noopener,noreferrer");
+                    }}
                     className="w-full bg-lime-600 hover:bg-lime-700"
                   >
                     <Search className="w-4 h-4 mr-2" />
                     Buscar en Español
                   </Button>
                 </div>
-
-                {mlsUrl && (
-                  <div
-                    className="border rounded-lg overflow-hidden"
-                    style={{ height: "800px" }}
-                  >
-                    <iframe
-                      src={mlsUrl}
-                      className="w-full h-full border-0"
-                      title="MLS Rental Search"
-                      sandbox="allow-scripts allow-same-origin allow-forms"
-                    />
-                  </div>
-                )}
               </div>
             </CardContent>
           </Card>

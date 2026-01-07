@@ -5,6 +5,7 @@ import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 import { IDXBrokerWidget } from "@/components/idxbroker-widget";
+import { BROKER_INFO, PATRON_COLORS } from "@/lib/constants";
 
 interface IProps {
   onClicked: () => void;
@@ -244,7 +245,7 @@ const CollectionsSection: React.FC<IProps> = ({ onClicked }) => {
             </div>
 
             {/* Widget IDX */}
-            <div className="flex flex-col md:flex-row items-center overflow-x-hidden justify-center">
+            <div className="flex flex-col md:flex-row items-start overflow-x-hidden justify-center gap-6">
               <div className="w-full xxl:w-[90%] xl:w-[80%] lg:w-[80%] md:w-[80%]">
                 <IDXBrokerWidget
                   widgetId="121096"
@@ -252,20 +253,100 @@ const CollectionsSection: React.FC<IProps> = ({ onClicked }) => {
                   className="shadow-none border-none"
                 />
               </div>
-              <div className="flex flex-col items-center justify-center w-full md:w-1/2 mt-3">
-                <button onClick={() => onClicked()} type="button" className="xl:w-[50%] lg:w-[90%] md:w-[90%] bg-lime-500 hover:bg-lime-600 text-white font-semibold px-6 py-2 transition-all duration-200 shadow-sm hover:shadow-md">Schedule a showing</button>
-                <img
-                  src="/fabiola-patron-updated.jpg"
-                  alt="Fabiola Patron"
-                  className="xl:w-[50%] lg:w-[90%] md:w-[90%] sm:w-[90%] object-cover mt-3"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
-                  }}
-                />
-                <h1 className="font-medium mt-3">Broker</h1>
-                <p className="font-medium mt-3">Phone Number: (323) 350-3137</p>
-              </div>
+              {/* Broker Card - Matching IDX Broker middleware design */}
+              <aside
+                className="w-full max-w-[340px] mx-auto md:w-[340px] md:max-w-none flex-shrink-0"
+                aria-label="Broker contact information"
+              >
+                <div className="bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden">
+                  {/* Schedule a showing button */}
+                  <button
+                    onClick={() => onClicked()}
+                    type="button"
+                    aria-label={`Schedule a showing with ${BROKER_INFO.name}`}
+                    className="w-full border-0 text-white font-bold text-center py-3 px-3.5 leading-[1.2] tracking-[0.2px] transition-colors duration-200"
+                    style={{
+                      backgroundColor: PATRON_COLORS.lime500,
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = PATRON_COLORS.lime600;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = PATRON_COLORS.lime500;
+                    }}
+                  >
+                    Schedule a showing
+                  </button>
+
+                  {/* Broker image */}
+                  <div className="p-3.5 pb-2.5">
+                    <img
+                      src={BROKER_INFO.imageUrl}
+                      alt={`${BROKER_INFO.name}, ${BROKER_INFO.role}`}
+                      className="w-full h-auto block rounded-[14px] object-cover"
+                      loading="lazy"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = BROKER_INFO.imageUrlFallback;
+                      }}
+                    />
+                  </div>
+
+                  {/* Broker name and role */}
+                  <div className="px-3.5 pt-2.5 pb-3.5 text-center">
+                    <div className="font-extrabold text-base mt-0.5 mb-0.5">
+                      {BROKER_INFO.name}
+                    </div>
+                    <div className="font-bold text-xs opacity-65 mb-2.5">
+                      {BROKER_INFO.role}
+                    </div>
+                  </div>
+
+                  {/* Contact details */}
+                  <div className="border-t border-gray-200 px-3.5 py-2.5 text-left text-xs sm:text-[13px]">
+                    <div className="flex items-center justify-between gap-2.5 py-2 border-b border-gray-100">
+                      <div className="font-semibold text-gray-600">Call</div>
+                      <div className="font-bold text-gray-900 break-words">
+                        <a
+                          href={`tel:${BROKER_INFO.phoneFormatted}`}
+                          className="text-gray-900 no-underline hover:underline"
+                          aria-label={`Call ${BROKER_INFO.name} at ${BROKER_INFO.phone}`}
+                        >
+                          {BROKER_INFO.phone}
+                        </a>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between gap-2.5 py-2 border-b border-gray-100">
+                      <div className="font-semibold text-gray-600">Text</div>
+                      <div className="font-bold text-gray-900 break-words">
+                        <a
+                          href={`sms:${BROKER_INFO.phoneFormatted}`}
+                          className="text-gray-900 no-underline hover:underline"
+                          aria-label={`Text ${BROKER_INFO.name} at ${BROKER_INFO.phone}`}
+                        >
+                          {BROKER_INFO.phone}
+                        </a>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between gap-2.5 py-2 border-b border-gray-100">
+                      <div className="font-semibold text-gray-600">Email</div>
+                      <div className="font-bold text-gray-900 break-words text-right">
+                        <a
+                          href={`mailto:${BROKER_INFO.email}`}
+                          className="text-gray-900 no-underline hover:underline"
+                          aria-label={`Email ${BROKER_INFO.name} at ${BROKER_INFO.email}`}
+                        >
+                          {BROKER_INFO.email}
+                        </a>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between gap-2.5 py-2">
+                      <div className="font-semibold text-gray-600">DRE License</div>
+                      <div className="font-bold text-gray-900">{BROKER_INFO.dreLicense}</div>
+                    </div>
+                  </div>
+                </div>
+              </aside>
             </div>
           </div>
 

@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, User } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { formatDateUS } from "@/lib/utils/date-formatter";
 
 interface BlogCardProps {
   id: string;
@@ -16,6 +17,7 @@ interface BlogCardProps {
   imageUrl: string;
   readTime: string;
   featured?: boolean;
+  createdAt?: string; // Optional created_at for fallback when publish_date is not available
 }
 
 export function BlogCard({
@@ -28,13 +30,10 @@ export function BlogCard({
   imageUrl,
   readTime,
   featured = false,
+  createdAt,
 }: BlogCardProps) {
   const router = useRouter();
-  const formattedDate = new Date(date).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const formattedDate = formatDateUS(date, createdAt);
 
   if (featured) {
     return (

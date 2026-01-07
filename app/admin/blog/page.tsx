@@ -254,12 +254,19 @@ export default function AdminBlogPage() {
 
   const handleStatusChange = async (id: number, newStatus: string) => {
     try {
-      await blogService.updatePost(id, { status: newStatus as any });
+      const post = blogPosts.find((p) => p.id === id);
+      const updateData: any = { status: newStatus as any };
+      
+      // Si se está publicando y no tiene publish_date, establecerlo
+      if (newStatus === 'published' && post && (!post.publish_date || post.publish_date.trim() === '')) {
+        updateData.publish_date = new Date().toISOString();
+      }
+      
+      await blogService.updatePost(id, updateData);
     setBlogPosts(
-      blogPosts.map((p) => (p.id === id ? { ...p, status: newStatus } : p))
+      blogPosts.map((p) => (p.id === id ? { ...p, status: newStatus, ...updateData } : p))
     );
 
-    const post = blogPosts.find((p) => p.id === id);
     if (post) {
       toast({
         title: "Status updated",

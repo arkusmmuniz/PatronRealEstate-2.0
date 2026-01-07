@@ -1,0 +1,78 @@
+/* Listing Detail Page Styles */
+
+/* Prevent horizontal scroll globally - but only for this page */
+.buyers-poc-listing-detail-container {
+  overflow-x: hidden !important;
+}
+
+/* Prevent horizontal scroll on body when on this page */
+body:has(.buyers-poc-listing-detail-container) {
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+}
+
+/* Container adjustments - full width, no horizontal scroll */
+.buyers-poc-listing-detail-container {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Main content area - full width */
+.buyers-poc-listing-main {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* IDX Broker iframe container */
+.idx-broker-iframe-container {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-y: visible;
+  position: relative;
+}
+
+/* Iframe styling - full width, responsive, allow page scroll */
+.idx-broker-iframe {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  border: none !important;
+  display: block !important;
+  /* Large min-height to show all content, allow page scroll */
+  min-height: 3000px;
+  height: auto;
+  /* Remove iframe internal scrolling - let page handle it */
+  overflow: visible;
+}
+
+/* Grid adjustments */
+.grid {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .buyers-poc-listing-detail-container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
+/* Ensure no elements cause horizontal overflow */
+* {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Card adjustments */
+.card, [class*="Card"] {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+

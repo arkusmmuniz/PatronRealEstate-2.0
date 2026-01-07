@@ -21,16 +21,16 @@ export default function EnvTest() {
         </div>
         
         <div>
-          <strong>SUPABASE_SERVICE_ROLE_KEY:</strong>
+          <strong>NEXT_PUBLIC_SUPABASE_SERVICE_KEY:</strong>
           <div className="bg-gray-100 p-2 rounded mt-1">
-            {process.env.SUPABASE_SERVICE_ROLE_KEY ? 'SET (hidden)' : 'NOT SET'}
+            {process.env.NEXT_PUBLIC_SUPABASE_SERVICE_KEY ? 'SET (hidden)' : 'NOT SET'}
           </div>
         </div>
         
         <div>
-          <strong>DATABASE_URL:</strong>
+          <strong>NEXT_PUBLIC_API_KEY:</strong>
           <div className="bg-gray-100 p-2 rounded mt-1">
-            {process.env.DATABASE_URL ? 'SET (hidden)' : 'NOT SET'}
+            {process.env.NEXT_PUBLIC_API_KEY ? 'SET (hidden)' : 'NOT SET'}
           </div>
         </div>
         

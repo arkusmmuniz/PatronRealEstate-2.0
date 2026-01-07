@@ -1,6 +1,6 @@
 // IDXBroker API Configuration
 export const IDXBROKER_CONFIG = {
-  API_KEY: process.env.NEXT_PUBLIC_API,
+  API_KEY: process.env.NEXT_PUBLIC_API_KEY,
   BASE_URL: "https://middleware.idxbroker.com/mls",
   // Replace with your actual IDXBroker domain when you have real data
   WEBSITE_URL: "https://www.idxbroker.com",
@@ -10,6 +10,6 @@ export const IDXBROKER_CONFIG = {
 
 // Environment-based configuration
 export const getApiKey = () => {
-  // In production, you might want to use environment variables
-  return process.env.NEXT_PUBLIC_IDXBROKER_API_KEY || IDXBROKER_CONFIG.API_KEY;
+  // Returns the API key from environment variables
+  return process.env.NEXT_PUBLIC_API_KEY || IDXBROKER_CONFIG.API_KEY;
 };
