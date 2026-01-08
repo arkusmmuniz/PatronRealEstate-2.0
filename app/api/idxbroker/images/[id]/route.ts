@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const { searchParams } = new URL(request.url);
   const apiKey = searchParams.get('apiKey');
-  const propertyId = params.id;
+  const resolvedParams = await params;
+  const propertyId = resolvedParams.id;
 
   if (!apiKey) {
     return NextResponse.json({ error: 'API key is required' }, { status: 400 });

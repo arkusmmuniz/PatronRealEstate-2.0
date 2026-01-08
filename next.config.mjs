@@ -31,17 +31,42 @@ const nextConfig = {
           permanent: false,
         },
         {
-          source: '/debug-:path*',
+          source: '/debug-supabase',
           destination: '/404',
           permanent: false,
         },
         {
-          source: '/test-:path*',
+          source: '/debug-login',
           destination: '/404',
           permanent: false,
         },
         {
-          source: '/create-:path*-debug',
+          source: '/debug-blog-schema',
+          destination: '/404',
+          permanent: false,
+        },
+        {
+          source: '/debug-blog-individual',
+          destination: '/404',
+          permanent: false,
+        },
+        {
+          source: '/test-supabase',
+          destination: '/404',
+          permanent: false,
+        },
+        {
+          source: '/test-blog-creation',
+          destination: '/404',
+          permanent: false,
+        },
+        {
+          source: '/create-blog-debug',
+          destination: '/404',
+          permanent: false,
+        },
+        {
+          source: '/create-video-debug',
           destination: '/404',
           permanent: false,
         },
