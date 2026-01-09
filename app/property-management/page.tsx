@@ -55,27 +55,15 @@ export default function PropertyManagementPage() {
 
               {/* IDX Broker Rental Search Integration */}
               <div className="mb-6">
-                <h3 className="text-lg font-semibold mb-4">
-                  Search Available Rentals
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex justify-center">
                   <Button
                     onClick={() => {
                       window.open(IDX_RENTALS_URL_EN, "_blank", "noopener,noreferrer");
                     }}
-                    className="w-full bg-lime-600 hover:bg-lime-700"
+                    className="w-full md:w-auto px-8 py-6 text-lg bg-lime-600 hover:bg-lime-700"
                   >
-                    <Search className="w-4 h-4 mr-2" />
-                    Search in English
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      window.open(IDX_RENTALS_URL_ES, "_blank", "noopener,noreferrer");
-                    }}
-                    className="w-full bg-lime-600 hover:bg-lime-700"
-                  >
-                    <Search className="w-4 h-4 mr-2" />
-                    Buscar en Español
+                    <Search className="w-5 h-5 mr-2" />
+                    Search Available Rentals
                   </Button>
                 </div>
               </div>

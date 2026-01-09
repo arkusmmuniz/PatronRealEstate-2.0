@@ -5,6 +5,19 @@ const supabaseUrl:any = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
 const supabaseAnonKey:any = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 const supabaseServiceKey:any = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_KEY || ''
 
+// Detectar si estamos en runtime (no en build)
+const isRuntime = typeof window !== 'undefined' || process.env.NEXT_PHASE === 'phase-production-server';
+
+// Validar que las variables de entorno estén configuradas en runtime
+if (isRuntime && (!supabaseUrl || !supabaseAnonKey || !supabaseServiceKey)) {
+  console.error('⚠️ SUPABASE ERROR: Missing environment variables in production!');
+  console.error('Missing:', {
+    NEXT_PUBLIC_SUPABASE_URL: !supabaseUrl,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: !supabaseAnonKey,
+    NEXT_PUBLIC_SUPABASE_SERVICE_KEY: !supabaseServiceKey
+  });
+}
+
 // Crear clientes solo si las variables están disponibles
 // Durante el build, esto puede no estar disponible, por lo que usamos valores dummy
 export const supabase = supabaseUrl && supabaseAnonKey 
