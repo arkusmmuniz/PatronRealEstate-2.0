@@ -123,7 +123,7 @@ const localCommunities: LocalCommunity[] = [
 
 const communityStats = [
   { label: "Total Communities", value: "6", icon: MapPin },
-  { label: "Combined Population", value: "365K+", icon: Users },
+  { label: "Combined Population", value: "4.0M+", icon: Users },
   { label: "Avg Home Price", value: "$950K", icon: Home },
   { label: "Mountain Access", value: "100%", icon: Mountain }
 ];
