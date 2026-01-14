@@ -27,17 +27,17 @@ export default function NELAPropertiesPage() {
             </div>
             <div>
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
-                Northeast LA Properties
+                Los Angeles Properties
               </h1>
               <p className="text-gray-600 flex items-center gap-2 mt-1">
                 <MapPin className="w-4 h-4" />
-                Explore homes in Northeast LA
+                Explore homes in Los Angeles
               </p>
             </div>
           </div>
           
           <p className="text-gray-600 max-w-3xl">
-            Discover vibrant properties in Northeast LA, a rich urban tapestry of multiple neighborhoods 
+            Discover vibrant properties in Los Angeles, a rich urban tapestry of multiple neighborhoods 
             with cultural vibrancy and communal creativity.
           </p>
         </div>
@@ -50,7 +50,7 @@ export default function NELAPropertiesPage() {
               <div className="text-sm text-gray-600">Avg Home Price</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-lime-600 mb-1">244,000</div>
+              <div className="text-2xl font-bold text-lime-600 mb-1">3,878,704</div>
               <div className="text-sm text-gray-600">Residents</div>
             </div>
             <div className="text-center">
@@ -64,7 +64,7 @@ export default function NELAPropertiesPage() {
         <div className="mb-12">
           <IDXBrokerWidget 
             widgetId="121637" 
-            title="Available Properties in Northeast LA" 
+            title="Available Properties in Los Angeles" 
           />
         </div>
 
@@ -73,7 +73,7 @@ export default function NELAPropertiesPage() {
           <div className="text-center">
             <Home className="w-12 h-12 text-lime-600 mx-auto mb-4" />
             <h3 className="text-2xl font-bold text-gray-900 mb-3">
-              Ready to Find Your Home in Northeast LA?
+              Ready to Find Your Home in Los Angeles?
             </h3>
             <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
               Contact Fabiola Patron for personalized guidance and expert assistance in finding 

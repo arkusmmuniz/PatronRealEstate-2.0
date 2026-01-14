@@ -50,7 +50,7 @@ export default function SunlandPropertiesPage() {
               <div className="text-sm text-gray-600">Avg Home Price</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-lime-600 mb-1">15,000</div>
+              <div className="text-2xl font-bold text-lime-600 mb-1">21,588</div>
               <div className="text-sm text-gray-600">Residents</div>
             </div>
             <div className="text-center">

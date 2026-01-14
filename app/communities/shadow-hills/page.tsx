@@ -50,7 +50,7 @@ export default function ShadowHillsPropertiesPage() {
               <div className="text-sm text-gray-600">Avg Home Price</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-lime-600 mb-1">13,000</div>
+              <div className="text-2xl font-bold text-lime-600 mb-1">14,800</div>
               <div className="text-sm text-gray-600">Residents</div>
             </div>
             <div className="text-center">
